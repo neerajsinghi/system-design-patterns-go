@@ -3,7 +3,7 @@
 [![CI](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml/badge.svg)](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/neerajsinghi/system-design-patterns-go.svg)](https://pkg.go.dev/github.com/neerajsinghi/system-design-patterns-go)
 
-**48 system design patterns, each as a small, tested Go implementation you can run in under a second.**
+**53 system design patterns, each as a small, tested Go implementation you can run in under a second.**
 
 Most system design material stops at boxes and arrows. This repo goes one step further: every pattern is real code with tests, a runnable simulation that prints what happens step by step, and a write-up covering the problem, a diagram, trade-offs, when *not* to use it, and real systems that rely on it.
 
@@ -41,6 +41,7 @@ Keep a service up when its dependencies are slow, failing or overloaded.
 [Sliding window rate limiter](patterns/reliability/sliding-window-rate-limiter) ·
 [Load shedding](patterns/reliability/load-shedding) ·
 [Fallback](patterns/reliability/fallback) ·
+[Serve-stale](patterns/reliability/serve-stale) ·
 [Health check](patterns/reliability/health-check) ·
 [Hedged requests](patterns/reliability/hedged-requests) ·
 [Idempotency key](patterns/reliability/idempotency-key)
@@ -50,6 +51,9 @@ Keep a service up when its dependencies are slow, failing or overloaded.
 Cache, partition, replicate and persist data at scale.
 
 [Cache-aside](patterns/data/cache-aside) ·
+[Cache eviction](patterns/data/cache-eviction) ·
+[Refresh-ahead](patterns/data/refresh-ahead) ·
+[Two-tier cache](patterns/data/two-tier-cache) ·
 [Write-through cache](patterns/data/write-through-cache) ·
 [Write-behind cache](patterns/data/write-behind-cache) ·
 [Consistent hashing](patterns/data/consistent-hashing) ·
@@ -94,9 +98,24 @@ Shape services, APIs and traffic flow.
 [Cursor pagination](patterns/architecture/cursor-pagination) ·
 [Webhook delivery](patterns/architecture/webhook-delivery) ·
 [Scatter-gather](patterns/architecture/scatter-gather) ·
-[Server-sent events](patterns/architecture/server-sent-events)
+[Server-sent events](patterns/architecture/server-sent-events) ·
+[Tiered cache](patterns/architecture/tiered-cache)
 
 Each category page has a table of the problem every pattern solves and its key trade-off.
+
+## Scenarios
+
+Production incidents reproduced as runnable before-and-afters: the broken design, the fixed one built from the patterns above, and a test that asserts the difference. See [`scenarios/`](scenarios).
+
+| Scenario | Incident | Fixed with |
+|---|---|---|
+| [Cache stampede](scenarios/cache-stampede) | Every cached key expires at once and floods the database | Refresh-ahead |
+| [Hot short link](scenarios/hot-short-link) | One viral link overloads the cache node that owns it | Two-tier cache |
+| [Release-day buffering](scenarios/release-day-buffering) | A launch makes every CDN edge miss and crash-loops the origin | Tiered cache, serve-stale |
+
+```sh
+go run ./scenarios/cache-stampede/broken   # then ./fixed
+```
 
 ## Which pattern do I need?
 
@@ -107,6 +126,11 @@ Each category page has a table of the problem every pattern solves and its key t
 | One slow service taking everything down | [Bulkhead](patterns/reliability/bulkhead), [timeouts](patterns/reliability/timeout), [load shedding](patterns/reliability/load-shedding) |
 | Bad p99 latency | [Hedged requests](patterns/reliability/hedged-requests), [scatter-gather](patterns/architecture/scatter-gather) with a deadline |
 | A database that can't keep up with reads | [Cache-aside](patterns/data/cache-aside), [read replicas](patterns/data/read-replicas) |
+| Load spikes every time cached keys expire | [Refresh-ahead](patterns/data/refresh-ahead) (TTL jitter, early refresh) |
+| One viral key overloading a cache node | [Two-tier cache](patterns/data/two-tier-cache) (in-process L1, hot-key replicas) |
+| A cache with a poor hit ratio, or wiped out by batch scans | [Cache eviction](patterns/data/cache-eviction) (W-TinyLFU) |
+| Errors whenever the origin is down, even for cached content | [Serve-stale](patterns/reliability/serve-stale) |
+| A launch stampeding the origin from every CDN edge | [Tiered cache](patterns/architecture/tiered-cache) (origin shield, pre-warming) |
 | A database that can't keep up with writes | [Sharding](patterns/data/sharding), [write-behind cache](patterns/data/write-behind-cache), [sharded counters](patterns/architecture/sharded-counters) |
 | Updating a DB and publishing an event atomically | [Transactional outbox](patterns/distributed/transactional-outbox) |
 | A business transaction spanning several services | [Saga](patterns/distributed/saga-orchestration), rather than [two-phase commit](patterns/distributed/two-phase-commit) |

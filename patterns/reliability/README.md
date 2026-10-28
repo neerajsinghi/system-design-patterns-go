@@ -18,6 +18,7 @@ dependency-free Go package with table-driven tests and a runnable simulation.
 | [Sliding window rate limiter](sliding-window-rate-limiter) | "N per window" quotas without the fixed-window boundary burst | Exact log costs O(N) memory; the O(1) counter is approximate |
 | [Load shedding](load-shedding) | Goodput collapse when offered load exceeds capacity | Overload becomes visible errors; priorities must be honest |
 | [Fallback](fallback) | One optional dependency failing the whole response | Stale or default data can be wrong and hides failures |
+| [Serve-stale](serve-stale) | Cached entries expiring into errors while the origin is down | Outages become invisible, and so does how old the data is |
 | [Health check](health-check) | Restarting the wrong thing, or routing to instances that cannot serve | Dependency-aware readiness can drain every instance at once |
 | [Hedged requests](hedged-requests) | Tail latency (p99) dominated by occasional slow replicas | Extra load (~5%); only safe for idempotent operations |
 | [Idempotency key](idempotency-key) | Retried writes executing twice (double charges) | Record and side effect must commit atomically; storage per key |

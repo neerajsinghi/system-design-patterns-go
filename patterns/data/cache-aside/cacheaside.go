@@ -11,25 +11,40 @@
 //   - Stampede protection: concurrent misses for the same key share a
 //     single in-flight load (singleflight-style) instead of all hitting
 //     the database at once.
+//
+// Two optional extras guard the database further:
+//
+//   - Negative caching (WithNegativeTTL): a loader result of ErrNotFound is
+//     cached briefly, so repeated lookups of a missing key don't all reach
+//     the database.
+//   - TTL jitter (WithTTLJitter): each entry's TTL is shortened by a random
+//     fraction, so keys loaded together don't all expire together.
 package cacheaside
 
 import (
 	"context"
 	"errors"
+	"math/rand/v2"
 	"sync"
 	"time"
 )
+
+// ErrNotFound is what a Loader returns (or wraps) when the key doesn't exist
+// in the source of truth. With WithNegativeTTL, that answer is cached too.
+var ErrNotFound = errors.New("cacheaside: not found")
 
 // Loader fetches a value from the source of truth (database, API, ...).
 type Loader[K comparable, V any] func(ctx context.Context, key K) (V, error)
 
 // Stats counts cache activity. Loads is the number of times the Loader ran.
+// NegativeHits are hits on a cached "not found".
 type Stats struct {
-	Hits, Misses, Loads, Shared uint64
+	Hits, Misses, Loads, Shared, NegativeHits uint64
 }
 
 type entry[V any] struct {
 	val     V
+	err     error // non-nil for a cached "not found"
 	expires time.Time
 }
 
@@ -43,9 +58,12 @@ type call[V any] struct {
 
 // Cache is a concurrency-safe cache-aside wrapper around a Loader.
 type Cache[K comparable, V any] struct {
-	load Loader[K, V]
-	ttl  time.Duration
-	now  func() time.Time
+	load   Loader[K, V]
+	ttl    time.Duration
+	negTTL time.Duration
+	jitter float64
+	now    func() time.Time
+	rand   func() float64
 
 	mu       sync.Mutex
 	entries  map[K]entry[V]
@@ -56,7 +74,34 @@ type Cache[K comparable, V any] struct {
 // Option configures a Cache.
 type Option func(*options)
 
-type options struct{ now func() time.Time }
+type options struct {
+	now    func() time.Time
+	rand   func() float64
+	negTTL time.Duration
+	jitter float64
+}
+
+// WithNegativeTTL caches ErrNotFound results for d, so a flood of lookups for
+// a key that doesn't exist (a deleted item, a typo'd URL, an enumeration
+// attack) reaches the database once per d instead of on every request.
+// Keep d short: a key created after a miss stays invisible for up to d,
+// unless the writer calls Invalidate.
+func WithNegativeTTL(d time.Duration) Option { return func(o *options) { o.negTTL = d } }
+
+// WithTTLJitter shortens each entry's TTL by a random fraction in [0, f),
+// with f in [0, 1), so keys loaded at the same moment expire across a window
+// instead of all at once. See the refresh-ahead pattern for more.
+func WithTTLJitter(f float64) Option { return func(o *options) { o.jitter = f } }
+
+// WithRand injects the random source used for TTL jitter. It must return
+// values in [0, 1); the cache calls it with its lock held.
+func WithRand(r func() float64) Option {
+	return func(o *options) {
+		if r != nil {
+			o.rand = r
+		}
+	}
+}
 
 // WithClock injects a clock, which makes TTL behaviour testable.
 func WithClock(now func() time.Time) Option {
@@ -75,14 +120,23 @@ func New[K comparable, V any](load Loader[K, V], ttl time.Duration, opts ...Opti
 	if ttl <= 0 {
 		return nil, errors.New("cacheaside: ttl must be positive")
 	}
-	o := options{now: time.Now}
+	o := options{now: time.Now, rand: rand.Float64}
 	for _, opt := range opts {
 		opt(&o)
+	}
+	if o.negTTL < 0 {
+		return nil, errors.New("cacheaside: negative ttl must not be negative")
+	}
+	if o.jitter < 0 || o.jitter >= 1 {
+		return nil, errors.New("cacheaside: ttl jitter must be in [0, 1)")
 	}
 	return &Cache[K, V]{
 		load:     load,
 		ttl:      ttl,
+		negTTL:   o.negTTL,
+		jitter:   o.jitter,
 		now:      o.now,
+		rand:     o.rand,
 		entries:  make(map[K]entry[V]),
 		inflight: make(map[K]*call[V]),
 	}, nil
@@ -90,14 +144,18 @@ func New[K comparable, V any](load Loader[K, V], ttl time.Duration, opts ...Opti
 
 // Get returns the cached value for key, loading it on a miss or expiry.
 // Concurrent misses for the same key wait for one shared load. Errors are
-// returned to every waiter but are never cached. ctx bounds how long this
+// returned to every waiter and are not cached, except ErrNotFound when
+// WithNegativeTTL is set. ctx bounds how long this
 // caller waits; the shared load itself is not cancelled when one waiter gives up.
 func (c *Cache[K, V]) Get(ctx context.Context, key K) (V, error) {
 	c.mu.Lock()
 	if e, ok := c.entries[key]; ok && c.now().Before(e.expires) {
 		c.stats.Hits++
+		if e.err != nil {
+			c.stats.NegativeHits++
+		}
 		c.mu.Unlock()
-		return e.val, nil
+		return e.val, e.err
 	}
 	delete(c.entries, key) // lazily drop the expired entry, if any
 	c.stats.Misses++
@@ -129,12 +187,25 @@ func (c *Cache[K, V]) doLoad(ctx context.Context, key K, cl *call[V]) {
 
 	c.mu.Lock()
 	cl.val, cl.err = val, err
-	if err == nil && !cl.stale {
-		c.entries[key] = entry[V]{val: val, expires: c.now().Add(c.ttl)}
+	switch {
+	case cl.stale:
+	case err == nil:
+		c.entries[key] = entry[V]{val: val, expires: c.now().Add(c.jitteredTTL())}
+	case c.negTTL > 0 && errors.Is(err, ErrNotFound):
+		c.entries[key] = entry[V]{val: val, err: err, expires: c.now().Add(c.negTTL)}
 	}
 	delete(c.inflight, key)
 	c.mu.Unlock()
 	close(cl.done)
+}
+
+// jitteredTTL returns the TTL shortened by a random fraction in [0, jitter).
+// The caller must hold c.mu.
+func (c *Cache[K, V]) jitteredTTL() time.Duration {
+	if c.jitter == 0 {
+		return c.ttl
+	}
+	return time.Duration(float64(c.ttl) * (1 - c.jitter*c.rand()))
 }
 
 // Invalidate removes key from the cache. Call it after writing to the source

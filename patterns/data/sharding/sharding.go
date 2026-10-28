@@ -1,9 +1,12 @@
-// Package sharding partitions a keyspace across shards. It provides two
+// Package sharding partitions a keyspace across shards. It provides three
 // routing strategies and a stop-the-world resharding helper that counts how
 // much data each strategy forces you to move.
 //
 //   - HashRouter: shard = hash(key) % N. Load spreads evenly, but range
 //     scans must touch every shard, and changing N moves most keys.
+//   - SlotRouter: Redis-Cluster-style hash slots. Keys hash to one of 16,384
+//     fixed slots and a table maps slots to shards, so adding a shard moves
+//     only the slots it takes over.
 //   - RangeRouter: each shard owns a contiguous key range. Range scans
 //     touch only the shards they overlap, and splitting a hot range moves
 //     only that range's keys. Sequential keys all land on the last shard.
