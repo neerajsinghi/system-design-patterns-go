@@ -1,5 +1,9 @@
-// Command example serves product recommendations through a fallback chain:
-// live service -> last known good (up to 5 minutes old) -> bestsellers.
+// Command example shows both shapes of fallback, in simulated time:
+//
+//  1. Tiers: product recommendations from the live service, then the last
+//     known good value (up to 5 minutes old), then bestsellers.
+//  2. Provider failover: OTP delivery through primary SMS -> secondary SMS ->
+//     voice call while the primary SMS provider has an outage.
 package main
 
 import (
@@ -13,6 +17,14 @@ import (
 )
 
 func main() {
+	fmt.Println("== Step 1: tiers (primary -> last known good -> default) ==")
+	tiers()
+	fmt.Println()
+	fmt.Println("== Step 2: OTP delivery during a primary SMS provider outage ==")
+	otpFailover()
+}
+
+func tiers() {
 	start := time.Date(2026, 1, 1, 9, 0, 0, 0, time.UTC)
 	now := start
 	healthy := true

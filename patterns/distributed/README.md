@@ -12,6 +12,9 @@ teaching implementations; every README says what a production system adds
 |---|---|---|
 | [Pub/Sub](pub-sub) | Fan one event out to many decoupled subscribers | A slow subscriber must be dropped, lose messages, or be disconnected |
 | [Competing consumers](competing-consumers) | Scale out workers on a shared queue without losing jobs on crashes | At-least-once delivery: handlers must be idempotent |
+| [Idempotent consumer](idempotent-consumer) | At-least-once delivery applies side effects twice after retransmits, crashes or rebalances | Effectively-once, but the side effect and the processed-ID table must share one transaction, and duplicates older than the window slip through |
+| [Per-key ordering](per-key-ordering) | Events for one entity arrive or are processed out of sequence | Order per key with parallelism across keys, but hot keys serialize and resequencing adds buffering latency |
+| [Dead-letter queue](dead-letter-queue) | A poison message retried forever blocks an ordered queue or burns workers | Healthy messages keep flowing, but parked ones need an owner, an alert and a redrive |
 | [Transactional outbox](transactional-outbox) | Update the database and publish an event without dual-write inconsistency | Duplicates and relay latency instead of lost events |
 | [Saga (orchestration)](saga-orchestration) | Multi-service transaction with a central coordinator and compensations | No isolation; the orchestrator couples to every service |
 | [Saga (choreography)](saga-choreography) | Multi-service transaction driven purely by events | Loose coupling, but the flow is implicit and hard to follow |
