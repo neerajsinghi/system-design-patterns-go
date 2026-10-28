@@ -6,6 +6,8 @@ Interview-style incidents, each reproduced as a runnable before-and-after. A sce
 | --- | --- | --- |
 | [Cache stampede](cache-stampede) | A deploy warms the cache, and one TTL later every key expires at once and floods the database | [Refresh-ahead](../patterns/data/refresh-ahead), [cache-aside](../patterns/data/cache-aside) |
 | [Hot short link](hot-short-link) | One viral link overloads the single cache node that owns it | [Two-tier cache](../patterns/data/two-tier-cache) |
+| [Seat double-booking](seat-double-booking) | Two shoppers both see a seat as free and both get tickets; abandoned carts lock seats; a retried webhook charges twice | [Reservation hold](../patterns/data/reservation-hold), [optimistic locking](../patterns/data/optimistic-locking), [idempotency key](../patterns/reliability/idempotency-key) |
+| [Hot partition](hot-partition) | One live-vote poll overloads its table partition and throttles unrelated polls; adding partitions doesn't help | [Hot-key salting](../patterns/data/hot-key-salting), [sharded counters](../patterns/architecture/sharded-counters) |
 | [Release-day buffering](release-day-buffering) | Every CDN edge misses on a new episode at launch and crash-loops the origin | [Tiered cache](../patterns/architecture/tiered-cache), [serve-stale](../patterns/reliability/serve-stale) |
 
 ## Layout
