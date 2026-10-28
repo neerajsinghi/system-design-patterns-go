@@ -91,6 +91,30 @@ log tailing, LLM token streaming, and change feeds to browsers.
 binary, high-frequency data, and for service-to-service streaming, where
 gRPC streams or a message broker are better.
 
+## Choosing a real-time transport
+
+SSE is one of four common ways to get fresh server data to a client. They
+differ mostly in who can talk, what each message costs, and what happens when
+the connection breaks.
+
+| | Short polling | [Long polling](../long-polling) | SSE | [WebSocket](../websocket-hub) |
+| --- | --- | --- | --- | --- |
+| **Direction** | client pulls | client pulls, server answers when it has data | server to client | both ways on one connection |
+| **Latency** | up to one poll interval | about one round trip after the event | near-immediate | near-immediate |
+| **Overhead per message** | a full HTTP request and response, even when nothing changed | a full request and response per delivery (or batch) | a few bytes of `id:`/`data:` framing on an open response | 2 to 14 bytes of frame header |
+| **Proxy / firewall friendliness** | best: ordinary short requests | good, but idle timeouts on proxies cap the hold time | good: plain HTTP, but buffering proxies must be told not to buffer | weakest: needs the `Upgrade` handshake to survive every hop; some corporate proxies block it |
+| **Reconnect / resume** | nothing to resume; the next poll asks again | the client sends its cursor with each request | built in: automatic reconnect plus `Last-Event-ID` | none in the protocol; the app must add its own sequence numbers and replay |
+| **Browser support** | everywhere | everywhere | `EventSource` in every modern browser (not old IE) | every modern browser |
+| **Server cost per client** | low between polls, but every poll pays full request cost, so cost scales with clients × poll rate | one parked request per client, re-created after each delivery | one open response (a goroutine and a socket) per client | one open socket plus per-connection read/write state and send buffers |
+| **Choose it when** | updates are rare, staleness of seconds is fine, or the client is something you cannot change | you need lower latency than polling but cannot hold streams open, or as a fallback | the feed is one-way: notifications, dashboards, logs, LLM tokens | the client also sends frequently: chat, games, collaborative editing |
+
+A rule of thumb: start with polling when freshness is loose, move to SSE when
+the server has to push, and reach for WebSockets only when the client has to
+push often too. Whatever you pick, a server that fans out to many clients
+needs a per-connection bound on what it buffers (see
+[Backpressure](../../distributed/backpressure)) and a way to notice dead
+connections (see [Health check](../../reliability/health-check)).
+
 ## Real-world examples
 
 - The **OpenAI** and **Anthropic** APIs stream completions as SSE
@@ -114,3 +138,10 @@ go test ./patterns/architecture/server-sent-events/
 - [Write-ahead log](../../data/write-ahead-log) and [Event sourcing](../../data/event-sourcing): durable, numbered logs that make replay possible.
 - [Fan-out feed](../fan-out-feed): what you'd stream to users in real time.
 - [Cursor pagination](../cursor-pagination): `Last-Event-ID` is a cursor into the event stream.
+- [Long polling](../long-polling): the request-per-delivery alternative when streams can't stay open.
+- [WebSocket hub](../websocket-hub): the bidirectional alternative, with its own fan-out and backpressure needs.
+- [Health check](../../reliability/health-check): per-connection heartbeats, the general form of the `: ping` comments.
+
+## Further reading
+
+- Khyati Jha, [High Level System Design Day-13: WebSockets (Part 1)](https://medium.com/high-level-system-desgin-interview-prep/high-level-system-design-day-13-websockets-part-1-0e1a6b4b3cc4), an introduction to WebSockets as a real-time transport

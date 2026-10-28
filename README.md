@@ -3,7 +3,7 @@
 [![CI](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml/badge.svg)](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/neerajsinghi/system-design-patterns-go.svg)](https://pkg.go.dev/github.com/neerajsinghi/system-design-patterns-go)
 
-**63 system design patterns, each as a small, tested Go implementation you can run in under a second.**
+**69 system design patterns, each as a small, tested Go implementation you can run in under a second.**
 
 Most system design material stops at boxes and arrows. This repo goes one step further: every pattern is real code with tests, a runnable simulation that prints what happens step by step, and a write-up covering the problem, a diagram, trade-offs, when *not* to use it, and real systems that rely on it.
 
@@ -70,7 +70,9 @@ Cache, partition, replicate and persist data at scale.
 [Materialized view](patterns/data/materialized-view) ·
 [Optimistic locking](patterns/data/optimistic-locking) ·
 [Reservation hold](patterns/data/reservation-hold) ·
-[Snowflake IDs](patterns/data/snowflake-id)
+[Snowflake IDs](patterns/data/snowflake-id) ·
+[Geospatial index](patterns/data/geospatial-index) ·
+[Leaderboard and top-K](patterns/data/leaderboard-top-k)
 
 ### [Distributed coordination & messaging](patterns/distributed)
 
@@ -90,7 +92,8 @@ Agree, order, communicate and stay consistent across machines.
 [Lamport & vector clocks](patterns/distributed/lamport-vector-clocks) ·
 [Gossip](patterns/distributed/gossip) ·
 [Quorum (N/R/W)](patterns/distributed/quorum) ·
-[Backpressure](patterns/distributed/backpressure)
+[Backpressure](patterns/distributed/backpressure) ·
+[Windowed stream aggregation](patterns/distributed/windowed-stream-aggregation)
 
 ### [Architecture, APIs & scaling](patterns/architecture)
 
@@ -108,6 +111,9 @@ Shape services, APIs and traffic flow.
 [Webhook delivery](patterns/architecture/webhook-delivery) ·
 [Scatter-gather](patterns/architecture/scatter-gather) ·
 [Server-sent events](patterns/architecture/server-sent-events) ·
+[Long polling](patterns/architecture/long-polling) ·
+[WebSocket hub](patterns/architecture/websocket-hub) ·
+[Presence](patterns/architecture/presence) ·
 [Tiered cache](patterns/architecture/tiered-cache) ·
 [Conditional requests](patterns/architecture/conditional-requests)
 
@@ -130,6 +136,8 @@ Production incidents reproduced as runnable before-and-afters: the broken design
 | [Cascading failure](scenarios/cascading-failure) | One slow dependency exhausts the worker pool and fails every page | Timeout, bulkhead, circuit breaker, outlier detection, fallback |
 | [Notification storm](scenarios/notification-storm) | A celebrity post delays OTPs behind millions of pushes | Fan-out feed dispatcher, dead-letter queue |
 | [Charged but no order](scenarios/charged-but-no-order) | Payment succeeds, the order doesn't, and the retry charges again | Saga, idempotency key, transactional outbox |
+| [Stale rider location](scenarios/stale-rider-location) | The map shows the rider far behind or jumping backwards | Presence, WebSocket hub, backpressure |
+| [Surge in the rain](scenarios/surge-in-the-rain) | Surge pricing lags the rain by 15 minutes | Windowed stream aggregation, geospatial index |
 | [Release-day buffering](scenarios/release-day-buffering) | A launch makes every CDN edge miss and crash-loops the origin | Tiered cache, serve-stale |
 
 ```sh
@@ -158,6 +166,12 @@ go run ./scenarios/cache-stampede/broken   # then ./fixed
 | One key hotter than a whole partition | [Hot-key salting](patterns/data/hot-key-salting), [two-tier cache](patterns/data/two-tier-cache) |
 | Two users booking the same seat | [Optimistic locking](patterns/data/optimistic-locking), [reservation hold](patterns/data/reservation-hold) |
 | Two editors overwriting each other, or clients re-downloading unchanged data | [Conditional requests](patterns/architecture/conditional-requests) (ETag, `If-Match`) |
+| Real-time updates to many clients | [WebSocket hub](patterns/architecture/websocket-hub), [long polling](patterns/architecture/long-polling), [server-sent events](patterns/architecture/server-sent-events) |
+| One slow WebSocket or SSE client stalling broadcasts to everyone | [Backpressure](patterns/distributed/backpressure) (per-connection send queue) |
+| Showing who is online, or routing to the server holding a user's connection | [Presence](patterns/architecture/presence) |
+| Finding nearby drivers or stores among many moving points | [Geospatial index](patterns/data/geospatial-index) |
+| Real-time counts per area per minute that are wrong because events arrive late | [Windowed stream aggregation](patterns/distributed/windowed-stream-aggregation) |
+| "My rank" or top 100 too slow with ORDER BY and COUNT(*) | [Leaderboard and top-K](patterns/data/leaderboard-top-k) |
 | Unique, sortable IDs from many servers without a central counter | [Snowflake IDs](patterns/data/snowflake-id) |
 | Updating a DB and publishing an event atomically | [Transactional outbox](patterns/distributed/transactional-outbox) |
 | Events processed twice or out of order | [Idempotent consumer](patterns/distributed/idempotent-consumer), [per-key ordering](patterns/distributed/per-key-ordering) |

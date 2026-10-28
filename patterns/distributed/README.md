@@ -24,7 +24,8 @@ teaching implementations; every README says what a production system adds
 | [Lamport and vector clocks](lamport-vector-clocks) | Order events and detect concurrency without synchronised clocks | Lamport is cheap but blind to concurrency; vectors grow with nodes |
 | [Gossip](gossip) | Spread membership and state across a large cluster without a centre | Eventual consistency; detection speed vs false suspicion |
 | [Quorum (N/R/W)](quorum) | Tunable consistency for replicated data | Latency and availability vs staleness; LWW loses concurrent writes |
-| [Backpressure](backpressure) | Keep a fast producer from overwhelming a slow consumer | Block (slow producers), drop (lose data) or signal (needs cooperation) |
+| [Backpressure](backpressure) | A producer, or a fan-out publisher, outruns its consumers | Block keeps every message but slows the producer; drop or disconnect keeps it fast but loses data or the connection |
+| [Windowed stream aggregation](windowed-stream-aggregation) | Real-time per-key aggregates over a stream whose events arrive late and out of order | Watermark delay and allowed lateness trade latency against completeness, and late results arrive as revisions |
 
 Run everything in this category:
 
