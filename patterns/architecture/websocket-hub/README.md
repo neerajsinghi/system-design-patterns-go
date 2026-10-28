@@ -75,7 +75,8 @@ flowchart LR
   (`AcceptKey`, tested against the RFC's own example). It keeps the hijacked
   `bufio.Reader`, which may already hold the client's first frames.
   `Dial(ctx, "ws://…")` is the client side. It sends a random key, checks the
-  accept value, and masks every frame it sends.
+  accept value, and masks every frame it sends. `NewConn(nc, server)` wraps a
+  stream that is already past the handshake, such as one end of a `net.Pipe`.
 - **Framing.** `AppendFrame`, `WriteFrame` and `ReadFrame` handle FIN, the
   opcodes, and the shortest length form: 7-bit up to 125, 16-bit up to 65535,
   64-bit beyond. They also handle the 4-byte XOR mask. `ReadFrame` rejects
@@ -227,19 +228,22 @@ pings. One run printed:
 - Chat: alice on node-a reached both of bob's devices (node-b and node-c) in
   about 1 to 2.5 ms. Socket writes were `a=0 b=1 c=1`.
 - Broadcast: a broadcast from node-b was read by 204 of 205 connections.
-  The one that never reads has its copy sitting in a socket buffer.
+  The one that never reads blocks node-a's writer for that connection.
 - Slow client: with a 16-slot queue and the `disconnect` policy, it was
-  evicted at update 152 of 200 (4 KiB each). The kernel socket buffers on
-  both ends absorbed about 540 KiB before the queue started to fill. The 30
-  other watchers got all 6000 deliveries, with p50 about 160 µs and p99
-  about 1 ms. Their p50 was about the same before and after the eviction (155 vs 158 µs).
+  evicted at update 17 of 200 (4 KiB each): its writer was already stuck on
+  the broadcast, so the queue filled straight away. The 30 other watchers
+  got all 6000 deliveries, with p50 about 155 µs and p99 about 1 ms. Their
+  p50 was 190–215 µs while the stuck client was attached and about 150 µs
+  after it was evicted.
 - Heartbeat: on a fake clock, the client that stopped answering pings was
   removed at +30 s, and the registry forgot it.
 
-Latencies vary from run to run, and the eviction point depends on the OS's
-loopback buffer sizes (152 on macOS here). The tests avoid both
-dependencies. They use `net.Pipe`, which has no buffer, as a perfectly stuck
-client, and a fake clock for the heartbeat.
+Latencies vary from run to run. The stuck client is attached with
+`NewConn` over `net.Pipe`, which has no buffer, so the eviction point is
+the same on every OS. Over a real socket the kernel buffers on both ends
+first absorb tens to hundreds of KiB, an amount that differs between macOS
+and Linux. The tests use the same trick, plus a fake clock for the
+heartbeat.
 
 ## Related patterns
 
