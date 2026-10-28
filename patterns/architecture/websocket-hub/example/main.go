@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"net"
 	"net/http/httptest"
 	"slices"
 	"strconv"
@@ -92,7 +93,12 @@ func waitUntil(cond func() bool) {
 	}
 }
 
-func pct(d []time.Duration, p float64) time.Duration { return d[int(float64(len(d)-1)*p)] }
+func pct(d []time.Duration, p float64) time.Duration {
+	if len(d) == 0 {
+		return 0
+	}
+	return d[int(float64(len(d)-1)*p)]
+}
 
 func main() {
 	clock := &fakeClock{t: time.Date(2026, 10, 28, 9, 0, 0, 0, time.UTC)}
@@ -151,7 +157,14 @@ func main() {
 	alice := connect(urls["node-a"], "alice")
 	bobPhone := connect(urls["node-c"], "bob")
 	bobLaptop := connect(urls["node-b"], "bob")
-	slowpoke := connect(urls["node-a"], "slowpoke") // never reads its socket
+	// slowpoke is attached over net.Pipe, which has no buffer: the first
+	// frame node-a writes to it blocks, as on a phone that has stopped
+	// reading. (A real socket would first soak up hundreds of KiB of kernel
+	// buffer, an amount that differs by OS.)
+	slowSide, slowpoke := net.Pipe()
+	if _, err := hubs["node-a"].Register("slowpoke", wsh.NewConn(slowSide, true)); err != nil {
+		panic(err)
+	}
 	sleepy := connect(urls["node-c"], "sleepy")
 	sleepy.conn.SetPingHandler(func([]byte) error { return nil }) // phone asleep: never pongs
 	for _, c := range []*client{alice, bobPhone, bobLaptop, sleepy} {
@@ -184,7 +197,7 @@ func main() {
 	want := int64(total() - 1) // every connection except slowpoke, which never reads
 	waitUntil(func() bool { return broadcastsSeen.Load() == want })
 	fmt.Printf("   node-b queued it for its %d local connections and published it once on the bus\n", queued)
-	fmt.Printf("   %d of %d connections read it (slowpoke's copy sits unread in its socket buffer)\n\n", broadcastsSeen.Load(), total())
+	fmt.Printf("   %d of %d connections read it (node-a's write to slowpoke is stuck: it never reads)\n\n", broadcastsSeen.Load(), total())
 
 	fmt.Printf("4. Slow consumer: %d watchers follow a rider; slowpoke (node-a) watches too but never reads\n", watchers)
 	fmt.Printf("   %d updates of %d bytes each, queue %d per connection, policy %s\n", updates, updateBytes, queueSize, wsh.Disconnect)
@@ -218,8 +231,8 @@ func main() {
 	slices.Sort(lat)
 	slices.Sort(latWithSlow)
 	slices.Sort(latAfter)
-	fmt.Printf("   slowpoke evicted at update %d: its socket buffers took ~%d KiB, then its %d-slot queue filled\n",
-		evictedAt, (evictedAt-queueSize-1)*updateBytes/1024, queueSize)
+	fmt.Printf("   slowpoke evicted at update %d: its writer was stuck on the broadcast, so its %d-slot queue filled\n",
+		evictedAt, queueSize)
 	fmt.Printf("   the other %d watchers got all %d updates (%d deliveries): latency p50 %v, p99 %v, max %v\n",
 		watchers, updates, len(lat), pct(lat, 0.50).Round(time.Microsecond), pct(lat, 0.99).Round(time.Microsecond), lat[len(lat)-1].Round(time.Microsecond))
 	fmt.Printf("   p50 while slowpoke was stuck (updates 1-%d): %v; after it was gone: %v\n",
@@ -267,5 +280,5 @@ func main() {
 		s.Close()
 	}
 	cluster.Close()
-	_ = slowpoke.conn.Close()
+	_ = slowpoke.Close()
 }

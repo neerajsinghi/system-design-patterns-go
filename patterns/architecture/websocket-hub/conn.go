@@ -65,6 +65,12 @@ type Conn struct {
 	pongHandler func(payload []byte)
 }
 
+// NewConn wraps a byte stream that already speaks WebSocket framing, such
+// as a connection upgraded by other code, or one end of a net.Pipe in tests
+// and simulations. Set server for the server's end: it expects masked frames
+// from its peer and sends unmasked ones.
+func NewConn(nc net.Conn, server bool) *Conn { return newConn(nc, nil, server) }
+
 func newConn(nc net.Conn, br *bufio.Reader, server bool) *Conn {
 	if br == nil {
 		br = bufio.NewReader(nc)
