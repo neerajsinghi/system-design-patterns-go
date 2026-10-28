@@ -251,7 +251,7 @@ Scenarios import the pattern packages, so they double as integration tests of th
 ## 7. README and catalogue updates
 
 - Headline count: "48 system design patterns" → the new total after each batch. The CI badge and Quickstart stay the same.
-- Add `### [AI serving](patterns/ai)` with a category README and table, matching the other four.
+- Add `### [AI serving](../patterns/ai)` with a category README and table, matching the other four.
 - Add a `## Scenarios` section after Patterns, linking `scenarios/` with a one-line incident per row.
 - Add rows to **Which pattern do I need?**:
 
