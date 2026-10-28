@@ -20,6 +20,7 @@ on loopback.
 | [Webhook delivery](webhook-delivery) | Notifying unreliable third-party servers securely and exactly once | At-least-once retries plus signed, deduplicated receivers, but you operate a retry queue and secrets |
 | [Scatter-gather](scatter-gather) | Waiting for every parallel source lets the slowest one set your latency | Latency bounded by a deadline, but callers must handle partial results |
 | [Server-sent events](server-sent-events) | Live server-to-client streams lose events across reconnects | Plain HTTP with built-in resume via `Last-Event-ID`, but one-way and limited by history depth |
+| [Tiered cache](tiered-cache) | Every CDN edge missing at once and stampeding the origin at launch | The origin sees one fetch per object, but the shield is a new concentration point |
 
 Run everything in this category:
 

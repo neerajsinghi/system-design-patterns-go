@@ -1,6 +1,6 @@
-// Command example contrasts hash and range sharding on the same data:
-// load balance with sequential keys, range-scan fan-out, and the cost of
-// adding a shard.
+// Command example contrasts hash, hash-slot and range sharding on the same
+// data: load balance with sequential keys, range-scan fan-out, and the cost
+// of adding a shard.
 package main
 
 import (
@@ -53,8 +53,13 @@ func main() {
 
 	fmt.Println("\nAdd a 5th shard")
 	moved := must(hashC.Reshard(must(sharding.NewHashRouter(5))))
-	fmt.Printf("  hash  4 -> 5 (mod N): moved %5d of 50,000 keys (%.0f%%)\n", moved, 100*float64(moved)/50_000)
+	fmt.Printf("  %-38s moved %5d of 50,000 keys (%.0f%%)\n", "hash 4 -> 5 (mod N):", moved, 100*float64(moved)/50_000)
+	slotR := must(sharding.NewSlotRouter(4))
+	slotC := must(sharding.NewCluster(slotR))
+	load(slotC, 50_000)
+	moved = must(slotC.Reshard(must(slotR.AddShard())))
+	fmt.Printf("  %-38s moved %5d of 50,000 keys (%.0f%%)\n", "hash slots 4 -> 5 (move whole slots):", moved, 100*float64(moved)/50_000)
 	moved = must(rangeC.Reshard(must(rangeR.Split("order:040000"))))
-	fmt.Printf("  range split hot shard at order:040000: moved %5d keys (%.0f%%)\n", moved, 100*float64(moved)/50_000)
+	fmt.Printf("  %-38s moved %5d of 50,000 keys (%.0f%%)\n", "range: split the hot shard at 040000:", moved, 100*float64(moved)/50_000)
 	fmt.Printf("  range shards now: %v\n", rangeC.Counts())
 }

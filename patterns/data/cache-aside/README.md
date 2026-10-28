@@ -50,6 +50,8 @@ sequenceDiagram
 - Errors are passed to every waiter but **never cached**, so a database blip doesn't become a cached failure.
 - `Invalidate` deletes the entry and marks any in-flight load as `stale`. That closes a classic race: a load that started before a write must not cache the pre-write value after the write's invalidation.
 - `Stats` exposes hits, misses, loads, and shared waiters so you can watch the dedup working.
+- **Negative caching** (`WithNegativeTTL`): when the loader returns `ErrNotFound` (or wraps it), the miss itself is cached for a short TTL. Without it, lookups of keys that don't exist (deleted items, mistyped URLs, scrapers enumerating IDs) bypass the cache entirely and every one of them hits the database. Other errors are still never cached, and `Invalidate` clears a cached miss when the key is created.
+- **TTL jitter** (`WithTTLJitter`): each entry's TTL is shortened by a random fraction, so keys loaded together (after a deploy or a warm-up) don't all expire in the same second. [Refresh-ahead](../refresh-ahead) covers this, and probabilistic early refresh, in depth.
 
 ## Trade-offs
 
@@ -59,6 +61,7 @@ sequenceDiagram
 | The cache is optional: if it fails, reads fall through to the DB | Read and write paths can race. Invalidation plus TTL bounds staleness but doesn't eliminate it |
 | Works with any data source, and the cache needs no schema knowledge | Every caller must follow the protocol (invalidate after write). One that forgets causes staleness |
 | Request coalescing keeps the DB load at about 1 query per key per TTL | Waiters are tied to one load. A slow load slows every waiter |
+| Negative caching shields the DB from lookups of missing keys | A key created after a cached miss stays invisible for the negative TTL unless the writer invalidates it |
 
 ## When to use / when not to
 
@@ -81,8 +84,16 @@ go test ./patterns/data/cache-aside/
 
 ## Related patterns
 
+- [Refresh-ahead](../refresh-ahead): TTL jitter and early refresh, so hot keys never miss
+- [Cache eviction](../cache-eviction): what to drop when a bounded cache is full
+- [Two-tier cache](../two-tier-cache): an in-process L1 in front of a shared cache, for hot keys
 - [Write-through cache](../write-through-cache): keep the cache updated on every write instead of invalidating
 - [Write-behind cache](../write-behind-cache): absorb writes in the cache and flush them asynchronously
 - [Read replicas](../read-replicas): another way to scale reads, with replication lag instead of TTL staleness
 - [Circuit breaker](../../reliability/circuit-breaker) and [fallback](../../reliability/fallback): what to do when the loader's backend is down
 - [Load shedding](../../reliability/load-shedding): the other defence against a herd of requests
+
+## Further reading
+
+- Arvind Kumar, [Redis Cache Causes Production Outage](https://codefarm0.medium.com/redis-cache-causes-production-outage-system-design-deep-dive-on-cache-stampede-ttl-jitter-and-0e44d9366c82), an interview scenario on stampedes, TTL jitter and request coalescing
+- Khyati Jha, [High Level System Design Day-8: Caching (Part 3)](https://medium.com/high-level-system-desgin-interview-prep/high-level-system-design-day-8-caching-part-3-e3c7a27b7235), which covers negative caching and stampede remedies

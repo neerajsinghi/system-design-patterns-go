@@ -186,3 +186,79 @@ func TestConcurrentPutGet(t *testing.T) {
 	_, _ = c.Reshard(h16) // concurrent with the writers
 	wg.Wait()
 }
+
+func TestKeySlot(t *testing.T) {
+	tests := []struct {
+		name string
+		a, b string // keys expected to share a slot ("" = compare with want)
+		want int
+	}{
+		{"CRC16-XMODEM check value", "123456789", "", 0x31C3},
+		{"hash tag: only the tag is hashed", "{user:42}:profile", "{user:42}:cart", -1},
+		{"hash tag equals the bare tag", "{user:42}:profile", "user:42", -1},
+		{"empty braces are not a tag", "foo{}bar", "", int(crc16([]byte("foo{}bar")) % NumSlots)},
+		{"first tag wins", "{a}{b}", "a", -1},
+		{"unclosed brace hashes the whole key", "foo{bar", "", int(crc16([]byte("foo{bar")) % NumSlots)},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := KeySlot(tt.a)
+			if tt.b != "" {
+				if other := KeySlot(tt.b); got != other {
+					t.Fatalf("KeySlot(%q) = %d, KeySlot(%q) = %d, want equal", tt.a, got, tt.b, other)
+				}
+				return
+			}
+			if got != tt.want {
+				t.Fatalf("KeySlot(%q) = %d, want %d", tt.a, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSlotRouterValidation(t *testing.T) {
+	for _, n := range []int{0, -1, NumSlots + 1} {
+		if _, err := NewSlotRouter(n); err == nil {
+			t.Fatalf("NewSlotRouter(%d): expected error", n)
+		}
+	}
+	if _, err := (SlotRouter{}).AddShard(); err == nil {
+		t.Fatal("AddShard on a zero router: expected error")
+	}
+}
+
+func TestSlotRouterAddShard(t *testing.T) {
+	r4, _ := NewSlotRouter(4)
+	r5, err := r4.AddShard()
+	if err != nil {
+		t.Fatal(err)
+	}
+	counts := r5.SlotsPerShard()
+	for i, c := range counts {
+		// 16384 isn't divisible by 5; the remainder (up to N-1 slots) stays with the new shard.
+		if c < NumSlots/5 || c > NumSlots/5+4 {
+			t.Fatalf("shard %d owns %d slots, want about %d (all: %v)", i, c, NumSlots/5, counts)
+		}
+	}
+	if got := r4.SlotsPerShard(); got[0] != NumSlots/4 {
+		t.Fatalf("AddShard modified the original router: %v", got)
+	}
+	// Only slots handed to the new shard change owner.
+	for s := range NumSlots {
+		if r5.owner[s] != r4.owner[s] && r5.owner[s] != 4 {
+			t.Fatalf("slot %d moved between old shards %d -> %d", s, r4.owner[s], r5.owner[s])
+		}
+	}
+
+	c, _ := NewCluster(r4)
+	fill(c, 10_000)
+	moved, _ := c.Reshard(r5)
+	if f := float64(moved) / 10_000; f < 0.17 || f > 0.23 {
+		t.Fatalf("slot 4->5 moved %.3f of keys, want about 0.20 (hash mod N moves about 0.80)", f)
+	}
+	for i := range 10_000 {
+		if _, ok := c.Get(fmt.Sprintf("user:%05d", i)); !ok {
+			t.Fatalf("lost user:%05d", i)
+		}
+	}
+}

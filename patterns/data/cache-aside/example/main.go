@@ -1,5 +1,6 @@
 // Command example simulates cache-aside in front of a slow "database":
-// a thundering herd on a cold key, TTL expiry, and invalidation on write.
+// a thundering herd on a cold key, TTL expiry, invalidation on write, and
+// negative caching of a key that doesn't exist.
 package main
 
 import (
@@ -24,7 +25,11 @@ func (d *db) load(_ context.Context, key string) (string, error) {
 	time.Sleep(20 * time.Millisecond) // pretend this is an expensive query
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	return d.rows[key], nil
+	v, ok := d.rows[key]
+	if !ok {
+		return "", cacheaside.ErrNotFound
+	}
+	return v, nil
 }
 
 func main() {
@@ -34,7 +39,8 @@ func main() {
 	clock := func() time.Time { clockMu.Lock(); defer clockMu.Unlock(); return now }
 	advance := func(d time.Duration) { clockMu.Lock(); now = now.Add(d); clockMu.Unlock() }
 
-	cache, err := cacheaside.New(store.load, 5*time.Minute, cacheaside.WithClock(clock))
+	cache, err := cacheaside.New(store.load, 5*time.Minute, cacheaside.WithClock(clock),
+		cacheaside.WithNegativeTTL(30*time.Second))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -68,4 +74,12 @@ func main() {
 	advance(6 * time.Minute)
 	v, _ = cache.Get(ctx, "user:1")
 	fmt.Printf("   read after expiry: %q (db queries: %d)\n", v, store.queries.Load())
+
+	fmt.Println("5) a scraper requests user:404, which doesn't exist, 500 times")
+	before := store.queries.Load()
+	for range 500 {
+		_, _ = cache.Get(ctx, "user:404")
+	}
+	fmt.Printf("   db queries for it: %d (the \"not found\" is cached for 30s; negative hits: %d)\n",
+		store.queries.Load()-before, cache.Stats().NegativeHits)
 }
