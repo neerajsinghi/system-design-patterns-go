@@ -3,7 +3,7 @@
 [![CI](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml/badge.svg)](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/neerajsinghi/system-design-patterns-go.svg)](https://pkg.go.dev/github.com/neerajsinghi/system-design-patterns-go)
 
-**58 system design patterns, each as a small, tested Go implementation you can run in under a second.**
+**63 system design patterns, each as a small, tested Go implementation you can run in under a second.**
 
 Most system design material stops at boxes and arrows. This repo goes one step further: every pattern is real code with tests, a runnable simulation that prints what happens step by step, and a write-up covering the problem, a diagram, trade-offs, when *not* to use it, and real systems that rely on it.
 
@@ -33,6 +33,7 @@ Requires Go 1.23 or later.
 Keep a service up when its dependencies are slow, failing or overloaded.
 
 [Retry with backoff](patterns/reliability/retry-backoff) ·
+[Retry budget](patterns/reliability/retry-budget) ·
 [Circuit breaker](patterns/reliability/circuit-breaker) ·
 [Bulkhead](patterns/reliability/bulkhead) ·
 [Timeout & deadline propagation](patterns/reliability/timeout) ·
@@ -43,6 +44,7 @@ Keep a service up when its dependencies are slow, failing or overloaded.
 [Fallback](patterns/reliability/fallback) ·
 [Serve-stale](patterns/reliability/serve-stale) ·
 [Health check](patterns/reliability/health-check) ·
+[Outlier detection](patterns/reliability/outlier-detection) ·
 [Hedged requests](patterns/reliability/hedged-requests) ·
 [Idempotency key](patterns/reliability/idempotency-key)
 
@@ -76,6 +78,9 @@ Agree, order, communicate and stay consistent across machines.
 
 [Pub/Sub](patterns/distributed/pub-sub) ·
 [Competing consumers](patterns/distributed/competing-consumers) ·
+[Idempotent consumer](patterns/distributed/idempotent-consumer) ·
+[Per-key ordering](patterns/distributed/per-key-ordering) ·
+[Dead-letter queue](patterns/distributed/dead-letter-queue) ·
 [Transactional outbox](patterns/distributed/transactional-outbox) ·
 [Saga (orchestration)](patterns/distributed/saga-orchestration) ·
 [Saga (choreography)](patterns/distributed/saga-choreography) ·
@@ -118,6 +123,13 @@ Production incidents reproduced as runnable before-and-afters: the broken design
 | [Hot short link](scenarios/hot-short-link) | One viral link overloads the cache node that owns it | Two-tier cache |
 | [Seat double-booking](scenarios/seat-double-booking) | Two shoppers get tickets for the same seat | Reservation hold, optimistic locking, idempotency key |
 | [Hot partition](scenarios/hot-partition) | One poll key throttles its table partition | Hot-key salting |
+| [Duplicate chat messages](scenarios/duplicate-chat-messages) | Lost acks make messages appear twice or never | Idempotent consumer, Snowflake IDs |
+| [Consumer double-processing](scenarios/consumer-double-processing) | A deploy replays uncommitted events and credits customers twice | Idempotent consumer, dead-letter queue |
+| [Out-of-order events](scenarios/out-of-order-events) | "Shipped" is processed before "paid" | Per-key ordering |
+| [OTP retry storm](scenarios/otp-retry-storm) | Retries multiply SMS traffic 30x during a provider outage | Retry budget, fallback chain, rate limiter |
+| [Cascading failure](scenarios/cascading-failure) | One slow dependency exhausts the worker pool and fails every page | Timeout, bulkhead, circuit breaker, outlier detection, fallback |
+| [Notification storm](scenarios/notification-storm) | A celebrity post delays OTPs behind millions of pushes | Fan-out feed dispatcher, dead-letter queue |
+| [Charged but no order](scenarios/charged-but-no-order) | Payment succeeds, the order doesn't, and the retry charges again | Saga, idempotency key, transactional outbox |
 | [Release-day buffering](scenarios/release-day-buffering) | A launch makes every CDN edge miss and crash-loops the origin | Tiered cache, serve-stale |
 
 ```sh
@@ -130,6 +142,9 @@ go run ./scenarios/cache-stampede/broken   # then ./fixed
 |---|---|
 | A flaky dependency | [Retry with backoff](patterns/reliability/retry-backoff), then a [circuit breaker](patterns/reliability/circuit-breaker) |
 | Retries causing double charges | [Idempotency key](patterns/reliability/idempotency-key) |
+| Retries making an outage worse | [Retry budget](patterns/reliability/retry-budget) |
+| A provider is down and you have a backup | [Fallback](patterns/reliability/fallback) (failover chain), [circuit breaker](patterns/reliability/circuit-breaker) |
+| One instance slow while its health check stays green | [Outlier detection](patterns/reliability/outlier-detection) |
 | One slow service taking everything down | [Bulkhead](patterns/reliability/bulkhead), [timeouts](patterns/reliability/timeout), [load shedding](patterns/reliability/load-shedding) |
 | Bad p99 latency | [Hedged requests](patterns/reliability/hedged-requests), [scatter-gather](patterns/architecture/scatter-gather) with a deadline |
 | A database that can't keep up with reads | [Cache-aside](patterns/data/cache-aside), [read replicas](patterns/data/read-replicas) |
@@ -145,6 +160,9 @@ go run ./scenarios/cache-stampede/broken   # then ./fixed
 | Two editors overwriting each other, or clients re-downloading unchanged data | [Conditional requests](patterns/architecture/conditional-requests) (ETag, `If-Match`) |
 | Unique, sortable IDs from many servers without a central counter | [Snowflake IDs](patterns/data/snowflake-id) |
 | Updating a DB and publishing an event atomically | [Transactional outbox](patterns/distributed/transactional-outbox) |
+| Events processed twice or out of order | [Idempotent consumer](patterns/distributed/idempotent-consumer), [per-key ordering](patterns/distributed/per-key-ordering) |
+| One bad message blocking or slowing the whole consumer | [Dead-letter queue](patterns/distributed/dead-letter-queue) |
+| A viral post's notifications delaying OTPs or hitting push-provider limits | [Fan-out feed](patterns/architecture/fan-out-feed) (notification dispatcher) |
 | A business transaction spanning several services | [Saga](patterns/distributed/saga-orchestration), rather than [two-phase commit](patterns/distributed/two-phase-commit) |
 | Only one worker may do a job at a time | [Leader election](patterns/distributed/leader-election), [lock with fencing](patterns/distributed/distributed-lock-fencing) |
 | Replacing a legacy system | [Strangler fig](patterns/architecture/strangler-fig) |

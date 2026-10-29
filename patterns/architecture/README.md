@@ -15,7 +15,7 @@ on loopback.
 | [Sidecar](sidecar) | Every app re-implements retries and metrics, in every language | Cross-cutting features with zero app changes, but an extra process and hop per instance |
 | [Strangler fig](strangler-fig) | Big-bang rewrites of legacy systems are risky | Incremental, reversible migration, but two systems run in parallel for a long time |
 | [Sharded counters](sharded-counters) | One hot counter row caps write throughput | Writes scale with shard count. Reads cost N lookups and aren't point-in-time |
-| [Fan-out feed](fan-out-feed) | Home timelines must be fast despite celebrity accounts with huge follower counts | Push makes reads cheap and pull makes writes cheap. Hybrid gets both at the cost of two code paths |
+| [Fan-out feed](fan-out-feed) | Home timelines and push notifications must stay fast despite celebrity accounts | Push makes reads cheap and pull makes writes cheap. Priority lanes protect OTPs from notification storms but don't add provider capacity |
 | [Cursor pagination](cursor-pagination) | Offset paging repeats or skips items under concurrent writes and slows with depth | Stable, O(limit) pages and tamper-proof cursors, but no "jump to page N" |
 | [Webhook delivery](webhook-delivery) | Notifying unreliable third-party servers securely and exactly once | At-least-once retries plus signed, deduplicated receivers, but you operate a retry queue and secrets |
 | [Scatter-gather](scatter-gather) | Waiting for every parallel source lets the slowest one set your latency | Latency bounded by a deadline, but callers must handle partial results |
