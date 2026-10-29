@@ -12,6 +12,11 @@
 //
 // An unbounded queue has none of these properties: it hides overload until
 // the process runs out of memory.
+//
+// For fan-out to many subscribers, SendQueue is a per-connection variant
+// whose OverflowPolicy (Block with a deadline, DropOldest, DropNewest or
+// Disconnect) keeps one slow subscriber from stalling the publisher and
+// everyone else.
 package backpressure
 
 import (

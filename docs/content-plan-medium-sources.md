@@ -1,6 +1,6 @@
 # Content plan: new patterns and scenarios from two Medium series
 
-*Drafted 2026-10-28. Status: batches 1 (caching depth), 2 (concurrency and keys) and 3 (messaging semantics) implemented, with their scenarios; batches 4–6 in progress.*
+*Drafted 2026-10-28. Status: batches 1 (caching depth), 2 (concurrency and keys), 3 (messaging semantics) and 4 (real-time) implemented, with their scenarios; batches 5–6 in progress.*
 
 This plan reviews two Medium sources and turns them into a backlog for this repo. It covers which new patterns to add, which existing patterns to extend, and a new `scenarios/` track of interview walkthroughs that combine patterns.
 
@@ -290,5 +290,5 @@ Each batch: patterns first, then their scenarios, then the README and portfolio 
 ## 9. Open questions
 
 1. ~~**`scenarios/` at the top level or `patterns/scenarios/`?**~~ Decided: top level, since scenarios compose patterns rather than being one. The simulation lives in a `scenario.go` package so the test can compare both runs.
-2. **WebSocket from scratch vs a library.** A stdlib-only RFC 6455 implementation keeps the repo's rule and is a strong teaching piece, but it is the largest item here. An alternative is to show hub semantics over SSE + POST and leave framing out.
+2. ~~**WebSocket from scratch vs a library.**~~ Decided: from scratch (RFC 6455 handshake, framing, close and ping/pong over `http.Hijacker`), keeping the standard-library rule; no extensions or subprotocols. A stdlib-only RFC 6455 implementation keeps the repo's rule and is a strong teaching piece, but it is the largest item here. An alternative is to show hub semantics over SSE + POST and leave framing out.
 3. **AI category scope.** Keep it to the four patterns above, and point to `go-rag-kit` / `llm-otel-go` for anything production-shaped.

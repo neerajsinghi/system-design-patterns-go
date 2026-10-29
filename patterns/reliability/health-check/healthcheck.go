@@ -9,6 +9,10 @@
 // It also provides a heartbeat failure detector, the peer-to-peer equivalent:
 // nodes are alive while heartbeats arrive, suspect after a short silence, and
 // dead after a long one.
+//
+// HeartbeatMonitor applies the same idea to a server's long-lived client
+// connections: each connection must beat (heartbeat or pong) every interval,
+// and one that misses K consecutive intervals is reaped by Sweep.
 package healthcheck
 
 import (

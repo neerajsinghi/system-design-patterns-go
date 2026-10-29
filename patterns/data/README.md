@@ -23,6 +23,8 @@ How data is cached, partitioned, replicated, logged, and reshaped for reading. E
 | [Optimistic locking](optimistic-locking) | Two writers read the same record and the second write silently overwrites the first | No locks and nearly free when conflicts are rare, but retries pile up on hot keys |
 | [Reservation hold](reservation-hold) | Abandoned checkouts lock inventory forever, or late payments oversell seats already resold | TTL holds free stock automatically, but late payers must be refunded or re-seated |
 | [Snowflake IDs](snowflake-id) | Unique, roughly time-ordered 64-bit IDs from many servers without a central counter | No coordination per ID, but only as ordered as the clocks, and every generator needs a unique node ID |
+| [Geospatial index](geospatial-index) | "Who is within 2 km?" scans every moving object on every query | Searching a few geohash cells cuts work about 42x, but queries must include neighbouring cells, and cells shrink with latitude |
+| [Leaderboard and top-K](leaderboard-top-k) | Top-N, "my rank" and "players around me" over millions of fast-changing scores, and trending items in a stream | O(log n) exact ranks, but the whole board lives on one node; Space-Saving uses bounded memory but its counts are approximate |
 
 ## Run everything
 

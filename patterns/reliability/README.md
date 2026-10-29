@@ -20,7 +20,7 @@ dependency-free Go package with table-driven tests and a runnable simulation.
 | [Load shedding](load-shedding) | Goodput collapse when offered load exceeds capacity | Overload becomes visible errors; priorities must be honest |
 | [Fallback](fallback) | One failing dependency or provider turning into user-facing errors | Stale or default answers, or pricier backup providers in a failover chain (and possible duplicate delivery) |
 | [Serve-stale](serve-stale) | Cached entries expiring into errors while the origin is down | Outages become invisible, and so does how old the data is |
-| [Health check](health-check) | Restarting the wrong thing, or routing to instances that cannot serve | Dependency-aware readiness can drain every instance at once |
+| [Health check](health-check) | Restarting the wrong thing, routing to instances that cannot serve, or keeping dead client connections open | Faster detection means more false positives and more probe traffic |
 | [Outlier detection](outlier-detection) | A slow-but-alive host passes health checks while ruining p99 for its share of traffic | Ejects bad hosts automatically, but needs a few bad requests first and can't fix a pool-wide slowdown |
 | [Hedged requests](hedged-requests) | Tail latency (p99) dominated by occasional slow replicas | Extra load (~5%); only safe for idempotent operations |
 | [Idempotency key](idempotency-key) | Retried writes executing twice (double charges) | Record and side effect must commit atomically; storage per key |

@@ -20,6 +20,9 @@ on loopback.
 | [Webhook delivery](webhook-delivery) | Notifying unreliable third-party servers securely and exactly once | At-least-once retries plus signed, deduplicated receivers, but you operate a retry queue and secrets |
 | [Scatter-gather](scatter-gather) | Waiting for every parallel source lets the slowest one set your latency | Latency bounded by a deadline, but callers must handle partial results |
 | [Server-sent events](server-sent-events) | Live server-to-client streams lose events across reconnects | Plain HTTP with built-in resume via `Last-Event-ID`, but one-way and limited by history depth |
+| [Long polling](long-polling) | Clients need near-real-time updates but can't use SSE or WebSockets, and short polling wastes requests | Plain HTTP with near-push latency and no lost updates, but one held request per waiting client and a re-poll spike after every broadcast |
+| [WebSocket hub](websocket-hub) | Two-way real-time delivery to users whose connections are spread over many nodes, with slow and dead clients | Any node can reach any user via a registry and pub/sub, but connections are stateful and pinned, and a full queue means dropping or disconnecting |
+| [Presence](presence) | Knowing who is online, on which gateway node, and when they were last seen, without a DB write per heartbeat | Cheap heartbeats and stable presence, but offline is announced late (TTL plus grace) |
 | [Tiered cache](tiered-cache) | Every CDN edge missing at once and stampeding the origin at launch | The origin sees one fetch per object, but the shield is a new concentration point |
 | [Conditional requests](conditional-requests) | Clients re-download unchanged resources, and concurrent PUTs silently overwrite each other | 304s cut transfer about 20x and 412s turn lost updates into visible conflicts, but clients must retry or merge |
 
