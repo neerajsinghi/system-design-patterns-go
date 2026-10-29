@@ -8,6 +8,7 @@ How data is cached, partitioned, replicated, logged, and reshaped for reading. E
 | [Cache eviction](cache-eviction) | A full cache throwing out the wrong entries, especially during scans | W-TinyLFU resists scans and adapts to change, but adds a sketch and approximate counts |
 | [Refresh-ahead](refresh-ahead) | Keys loaded together expiring together, and hot keys missing at every TTL | Readers almost never wait, but entries refresh early, so total loads rise |
 | [Two-tier cache](two-tier-cache) | One viral key saturating a single shared-cache node | L1 and replicas spread the load, but other servers stay stale for the L1 TTL |
+| [CDC cache invalidation](cdc-cache-invalidation) | Writes from batch jobs or other services never invalidate the cache, and a slow reader can put an old value back after the delete | Every write is covered and stale sets are rejected by version, but staleness is bounded by consumer lag and you run a CDC pipeline |
 | [Write-through cache](write-through-cache) | Reads right after writes miss or see stale data | Cache is always coherent, but every write pays store latency |
 | [Write-behind cache](write-behind-cache) | The store can't absorb a high rate of writes to hot keys | Fast, coalesced, batched writes, but unflushed writes are lost on crash |
 | [Consistent hashing](consistent-hashing) | `hash % N` remaps almost every key when nodes change | Only ~1/N of keys move, at the cost of `O(log n)` lookups and statistical balance |
@@ -19,7 +20,7 @@ How data is cached, partitioned, replicated, logged, and reshaped for reading. E
 | [Bloom filter](bloom-filter) | Membership checks against a huge set are too slow or too big | ~10 bits/item for 1% FPR, but false positives and no deletes |
 | [Write-ahead log](write-ahead-log) | Crashes lose or half-apply in-memory and paged changes | Exact recovery via sequential appends, but fsync latency and a log to checkpoint |
 | [LSM tree](lsm-tree) | Random in-place writes are slow for write-heavy workloads | Sequential, high-throughput writes, but read, write, and space amplification |
-| [Materialized view](materialized-view) | Expensive aggregate queries run on every read | O(1) per change and instant reads, but needs a complete, ordered change stream |
+| [Materialized view](materialized-view) | Expensive aggregates and joins run on every read | Instant reads, but needs a complete, ordered change stream, and denormalized rows multiply writes (one rename rewrites every copy) |
 | [Optimistic locking](optimistic-locking) | Two writers read the same record and the second write silently overwrites the first | No locks and nearly free when conflicts are rare, but retries pile up on hot keys |
 | [Reservation hold](reservation-hold) | Abandoned checkouts lock inventory forever, or late payments oversell seats already resold | TTL holds free stock automatically, but late payers must be refunded or re-seated |
 | [Snowflake IDs](snowflake-id) | Unique, roughly time-ordered 64-bit IDs from many servers without a central counter | No coordination per ID, but only as ordered as the clocks, and every generator needs a unique node ID |

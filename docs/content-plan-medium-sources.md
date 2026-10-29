@@ -1,6 +1,6 @@
 # Content plan: new patterns and scenarios from two Medium series
 
-*Drafted 2026-10-28. Status: batches 1 (caching depth), 2 (concurrency and keys), 3 (messaging semantics) and 4 (real-time) implemented, with their scenarios; batches 5–6 in progress.*
+*Drafted 2026-10-28. Status: batches 1 (caching depth), 2 (concurrency and keys), 3 (messaging semantics), 4 (real-time) and 5 (pipelines and edge) implemented, with their scenarios; batch 6 in progress.*
 
 This plan reviews two Medium sources and turns them into a backlog for this repo. It covers which new patterns to add, which existing patterns to extend, and a new `scenarios/` track of interview walkthroughs that combine patterns.
 

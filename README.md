@@ -3,7 +3,7 @@
 [![CI](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml/badge.svg)](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/neerajsinghi/system-design-patterns-go.svg)](https://pkg.go.dev/github.com/neerajsinghi/system-design-patterns-go)
 
-**69 system design patterns, each as a small, tested Go implementation you can run in under a second.**
+**74 system design patterns, each as a small, tested Go implementation you can run in under a second.**
 
 Most system design material stops at boxes and arrows. This repo goes one step further: every pattern is real code with tests, a runnable simulation that prints what happens step by step, and a write-up covering the problem, a diagram, trade-offs, when *not* to use it, and real systems that rely on it.
 
@@ -44,6 +44,7 @@ Keep a service up when its dependencies are slow, failing or overloaded.
 [Fallback](patterns/reliability/fallback) ·
 [Serve-stale](patterns/reliability/serve-stale) ·
 [Health check](patterns/reliability/health-check) ·
+[Graceful shutdown](patterns/reliability/graceful-shutdown) ·
 [Outlier detection](patterns/reliability/outlier-detection) ·
 [Hedged requests](patterns/reliability/hedged-requests) ·
 [Idempotency key](patterns/reliability/idempotency-key)
@@ -56,6 +57,7 @@ Cache, partition, replicate and persist data at scale.
 [Cache eviction](patterns/data/cache-eviction) ·
 [Refresh-ahead](patterns/data/refresh-ahead) ·
 [Two-tier cache](patterns/data/two-tier-cache) ·
+[CDC cache invalidation](patterns/data/cdc-cache-invalidation) ·
 [Write-through cache](patterns/data/write-through-cache) ·
 [Write-behind cache](patterns/data/write-behind-cache) ·
 [Consistent hashing](patterns/data/consistent-hashing) ·
@@ -80,6 +82,7 @@ Agree, order, communicate and stay consistent across machines.
 
 [Pub/Sub](patterns/distributed/pub-sub) ·
 [Competing consumers](patterns/distributed/competing-consumers) ·
+[Split-process-merge](patterns/distributed/split-process-merge) ·
 [Idempotent consumer](patterns/distributed/idempotent-consumer) ·
 [Per-key ordering](patterns/distributed/per-key-ordering) ·
 [Dead-letter queue](patterns/distributed/dead-letter-queue) ·
@@ -109,6 +112,8 @@ Shape services, APIs and traffic flow.
 [Fan-out feed](patterns/architecture/fan-out-feed) ·
 [Cursor pagination](patterns/architecture/cursor-pagination) ·
 [Webhook delivery](patterns/architecture/webhook-delivery) ·
+[Async request-reply](patterns/architecture/async-request-reply) ·
+[Connection pool](patterns/architecture/connection-pool) ·
 [Scatter-gather](patterns/architecture/scatter-gather) ·
 [Server-sent events](patterns/architecture/server-sent-events) ·
 [Long polling](patterns/architecture/long-polling) ·
@@ -138,6 +143,9 @@ Production incidents reproduced as runnable before-and-afters: the broken design
 | [Charged but no order](scenarios/charged-but-no-order) | Payment succeeds, the order doesn't, and the retry charges again | Saga, idempotency key, transactional outbox |
 | [Stale rider location](scenarios/stale-rider-location) | The map shows the rider far behind or jumping backwards | Presence, WebSocket hub, backpressure |
 | [Surge in the rain](scenarios/surge-in-the-rain) | Surge pricing lags the rain by 15 minutes | Windowed stream aggregation, geospatial index |
+| [Video pipeline](scenarios/video-pipeline) | Synchronous encodes time out, retries duplicate them, and a crash restarts a 6-hour job | Async request-reply, split-process-merge |
+| [Gateway bottleneck](scenarios/gateway-bottleneck) | The gateway pins its CPU on auth calls, new connections and one noisy partner | API gateway (auth offloading), connection pool, token bucket |
+| [Join-free feed](scenarios/join-free-feed) | The home feed JOIN pins the database at the evening peak | Materialized view, CQRS, fan-out feed |
 | [Release-day buffering](scenarios/release-day-buffering) | A launch makes every CDN edge miss and crash-loops the origin | Tiered cache, serve-stale |
 
 ```sh
@@ -160,11 +168,20 @@ go run ./scenarios/cache-stampede/broken   # then ./fixed
 | One viral key overloading a cache node | [Two-tier cache](patterns/data/two-tier-cache) (in-process L1, hot-key replicas) |
 | A cache with a poor hit ratio, or wiped out by batch scans | [Cache eviction](patterns/data/cache-eviction) (W-TinyLFU) |
 | Errors whenever the origin is down, even for cached content | [Serve-stale](patterns/reliability/serve-stale) |
+| Stale cache after writes made outside the app, or stale-forever values from invalidation races | [CDC cache invalidation](patterns/data/cdc-cache-invalidation) |
 | A launch stampeding the origin from every CDN edge | [Tiered cache](patterns/architecture/tiered-cache) (origin shield, pre-warming) |
 | Users save a change, refresh, and see the old value | [Read replicas](patterns/data/read-replicas) (session tokens, monotonic reads) |
 | A database that can't keep up with writes | [Sharding](patterns/data/sharding), [write-behind cache](patterns/data/write-behind-cache), [sharded counters](patterns/architecture/sharded-counters) |
 | One key hotter than a whole partition | [Hot-key salting](patterns/data/hot-key-salting), [two-tier cache](patterns/data/two-tier-cache) |
 | Two users booking the same seat | [Optimistic locking](patterns/data/optimistic-locking), [reservation hold](patterns/data/reservation-hold) |
+| A request takes longer than the load balancer timeout, and retries restart the work | [Async request-reply](patterns/architecture/async-request-reply) |
+| One long job too slow on one machine, and a crash near the end loses hours | [Split-process-merge](patterns/distributed/split-process-merge) |
+| Every request opens a new connection, or the database says "too many connections" | [Connection pool](patterns/architecture/connection-pool) |
+| Every service validating tokens itself or calling the auth service per request | [API gateway](patterns/architecture/api-gateway) (auth offloading) |
+| Clients keep calling instances that were removed or crashed | [Service discovery](patterns/architecture/service-discovery) (short TTL, evict on failure) |
+| Deploys causing connection resets, 502s or redelivered messages | [Graceful shutdown](patterns/reliability/graceful-shutdown) |
+| Old and new producers sharing a topic during a schema change | [Pub/Sub](patterns/distributed/pub-sub) (event versioning) |
+| The home feed query joining four tables on every page view | [Materialized view](patterns/data/materialized-view) (denormalized feed rows) |
 | Two editors overwriting each other, or clients re-downloading unchanged data | [Conditional requests](patterns/architecture/conditional-requests) (ETag, `If-Match`) |
 | Real-time updates to many clients | [WebSocket hub](patterns/architecture/websocket-hub), [long polling](patterns/architecture/long-polling), [server-sent events](patterns/architecture/server-sent-events) |
 | One slow WebSocket or SSE client stalling broadcasts to everyone | [Backpressure](patterns/distributed/backpressure) (per-connection send queue) |

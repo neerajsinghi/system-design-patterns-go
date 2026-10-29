@@ -1,6 +1,8 @@
-// Package loadbalancing implements four classic backend-selection
-// strategies behind one interface: round robin, smooth weighted round robin,
-// least connections, and power of two random choices.
+// Package loadbalancing implements classic backend-selection strategies
+// behind one interface: round robin, smooth weighted round robin, least
+// connections, power of two random choices, least response time (EWMA
+// latency × in-flight), and IP-hash client affinity (modulo or rendezvous
+// hashing).
 package loadbalancing
 
 import (

@@ -2,6 +2,12 @@
 // routes requests to backend services by path prefix, authenticates callers,
 // stamps every request with a correlation ID, and can aggregate several
 // backend calls into one response.
+//
+// With Config.Verifier set, the gateway also does auth offloading: it
+// verifies a signed HS256 bearer token once at the edge, answers 401 for
+// missing, expired or forged tokens, strips the Authorization header, and
+// passes the verified claims downstream in trusted headers (X-User-ID,
+// X-Scopes) after deleting any client-supplied copies. See token.go.
 package apigateway
 
 import (
@@ -54,6 +60,12 @@ type Config struct {
 	// Authenticate returns the caller's identity or an error. When nil,
 	// every route is treated as public.
 	Authenticate func(r *http.Request) (subject string, err error)
+	// Verifier, when set, verifies "Authorization: Bearer <token>" at the
+	// edge instead of calling Authenticate (set one or the other). Verified
+	// claims go to backends as X-User-ID and X-Scopes (and the subject also
+	// as X-Authenticated-Subject), and the Authorization header is not
+	// forwarded.
+	Verifier *TokenVerifier
 	// Transport is used for proxying and aggregation; nil means
 	// http.DefaultTransport.
 	Transport http.RoundTripper
@@ -64,6 +76,7 @@ type Gateway struct {
 	routes     []compiledRoute
 	aggregates map[string]Aggregate
 	auth       func(*http.Request) (string, error)
+	verifier   *TokenVerifier
 	client     *http.Client
 }
 
@@ -81,7 +94,11 @@ func New(cfg Config) (*Gateway, error) {
 	g := &Gateway{
 		aggregates: make(map[string]Aggregate),
 		auth:       cfg.Authenticate,
+		verifier:   cfg.Verifier,
 		client:     &http.Client{Transport: transport},
+	}
+	if cfg.Authenticate != nil && cfg.Verifier != nil {
+		return nil, errors.New("apigateway: set Authenticate or Verifier, not both")
 	}
 	for _, rt := range cfg.Routes {
 		prefix := strings.TrimSuffix(rt.Prefix, "/")
@@ -115,9 +132,16 @@ func (g *Gateway) newProxy(rt Route, transport http.RoundTripper) *httputil.Reve
 			pr.SetXForwarded()
 			// Identity headers are set only by the gateway, never trusted from clients.
 			pr.Out.Header.Del(HeaderSubject)
+			pr.Out.Header.Del(HeaderUserID)
+			pr.Out.Header.Del(HeaderScopes)
+			if g.verifier != nil {
+				// The token was checked here; backends get claims, not credentials.
+				pr.Out.Header.Del("Authorization")
+			}
 			if sub, ok := pr.In.Context().Value(subjectKey{}).(string); ok {
 				pr.Out.Header.Set(HeaderSubject, sub)
 			}
+			setClaimHeaders(pr.Out.Header, pr.In.Context())
 			pr.Out.Header.Set(HeaderRequestID, pr.In.Header.Get(HeaderRequestID))
 		},
 		ErrorHandler: func(w http.ResponseWriter, r *http.Request, err error) {
@@ -127,6 +151,23 @@ func (g *Gateway) newProxy(rt Route, transport http.RoundTripper) *httputil.Reve
 }
 
 type subjectKey struct{}
+
+type claimsKey struct{}
+
+// ClaimsFromContext returns the verified claims the gateway stored in the
+// request context (only when Config.Verifier is set and the route is not
+// public).
+func ClaimsFromContext(ctx context.Context) (Claims, bool) {
+	c, ok := ctx.Value(claimsKey{}).(Claims)
+	return c, ok
+}
+
+func setClaimHeaders(h http.Header, ctx context.Context) {
+	if c, ok := ClaimsFromContext(ctx); ok {
+		h.Set(HeaderUserID, c.Subject)
+		h.Set(HeaderScopes, strings.Join(c.Scopes, " "))
+	}
+}
 
 // ServeHTTP applies request IDs, authentication and routing.
 func (g *Gateway) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -161,7 +202,20 @@ func (g *Gateway) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // authorize returns the request (carrying the subject in its context) and
 // whether processing should continue. It writes the 401 itself.
 func (g *Gateway) authorize(w http.ResponseWriter, r *http.Request, public bool) (*http.Request, bool) {
-	if public || g.auth == nil {
+	if public {
+		return r, true
+	}
+	if g.verifier != nil {
+		c, err := g.verifier.Verify(bearerToken(r.Header.Get("Authorization")))
+		if err != nil {
+			w.Header().Set("WWW-Authenticate", `Bearer error="invalid_token"`)
+			writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "unauthorized"})
+			return r, false
+		}
+		ctx := context.WithValue(r.Context(), subjectKey{}, c.Subject)
+		return r.WithContext(context.WithValue(ctx, claimsKey{}, c)), true
+	}
+	if g.auth == nil {
 		return r, true
 	}
 	sub, err := g.auth(r)
@@ -213,6 +267,7 @@ func (g *Gateway) fetch(ctx context.Context, in *http.Request, target string) (j
 	if sub, ok := in.Context().Value(subjectKey{}).(string); ok {
 		req.Header.Set(HeaderSubject, sub)
 	}
+	setClaimHeaders(req.Header, in.Context())
 	resp, err := g.client.Do(req)
 	if err != nil {
 		return nil, err
