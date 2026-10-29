@@ -1,6 +1,6 @@
 # Content plan: new patterns and scenarios from two Medium series
 
-*Drafted 2026-10-28. Status: batches 1 (caching depth), 2 (concurrency and keys), 3 (messaging semantics), 4 (real-time) and 5 (pipelines and edge) implemented, with their scenarios; batch 6 in progress.*
+*Drafted 2026-10-28. Status: all six batches implemented, with their 20 scenarios (one PR per batch). The catalogue now has 78 patterns. The only planned item left out is `read-your-writes`, which was folded into `read-replicas` (see §4.2).*
 
 This plan reviews two Medium sources and turns them into a backlog for this repo. It covers which new patterns to add, which existing patterns to extend, and a new `scenarios/` track of interview walkthroughs that combine patterns.
 
@@ -251,7 +251,7 @@ Scenarios import the pattern packages, so they double as integration tests of th
 ## 7. README and catalogue updates
 
 - Headline count: "48 system design patterns" → the new total after each batch. The CI badge and Quickstart stay the same.
-- Add `### [AI serving](patterns/ai)` with a category README and table, matching the other four.
+- Add `### [AI serving](../patterns/ai)` with a category README and table, matching the other four.
 - Add a `## Scenarios` section after Patterns, linking `scenarios/` with a one-line incident per row.
 - Add rows to **Which pattern do I need?**:
 
@@ -291,4 +291,4 @@ Each batch: patterns first, then their scenarios, then the README and portfolio 
 
 1. ~~**`scenarios/` at the top level or `patterns/scenarios/`?**~~ Decided: top level, since scenarios compose patterns rather than being one. The simulation lives in a `scenario.go` package so the test can compare both runs.
 2. ~~**WebSocket from scratch vs a library.**~~ Decided: from scratch (RFC 6455 handshake, framing, close and ping/pong over `http.Hijacker`), keeping the standard-library rule; no extensions or subprotocols. A stdlib-only RFC 6455 implementation keeps the repo's rule and is a strong teaching piece, but it is the largest item here. An alternative is to show hub semantics over SSE + POST and leave framing out.
-3. **AI category scope.** Keep it to the four patterns above, and point to `go-rag-kit` / `llm-otel-go` for anything production-shaped.
+3. ~~**AI category scope.**~~ Decided: Keep it to the four patterns above, and point to `go-rag-kit` / `llm-otel-go` for anything production-shaped.

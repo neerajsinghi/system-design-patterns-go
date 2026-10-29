@@ -3,7 +3,7 @@
 [![CI](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml/badge.svg)](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/neerajsinghi/system-design-patterns-go.svg)](https://pkg.go.dev/github.com/neerajsinghi/system-design-patterns-go)
 
-**74 system design patterns, each as a small, tested Go implementation you can run in under a second.**
+**78 system design patterns, each as a small, tested Go implementation you can run in under a second.**
 
 Most system design material stops at boxes and arrows. This repo goes one step further: every pattern is real code with tests, a runnable simulation that prints what happens step by step, and a write-up covering the problem, a diagram, trade-offs, when *not* to use it, and real systems that rely on it.
 
@@ -122,6 +122,15 @@ Shape services, APIs and traffic flow.
 [Tiered cache](patterns/architecture/tiered-cache) ·
 [Conditional requests](patterns/architecture/conditional-requests)
 
+### [AI serving](patterns/ai)
+
+Keep LLM features cheap, fast and grounded. Embeddings and models are deterministic fakes, so nothing needs a GPU or an API key.
+
+[Semantic cache](patterns/ai/semantic-cache) ·
+[Model router](patterns/ai/model-router) ·
+[RAG retrieval](patterns/ai/rag-retrieval) ·
+[Vector ANN index](patterns/ai/vector-ann-index)
+
 Each category page has a table of the problem every pattern solves and its key trade-off.
 
 ## Scenarios
@@ -146,6 +155,9 @@ Production incidents reproduced as runnable before-and-afters: the broken design
 | [Video pipeline](scenarios/video-pipeline) | Synchronous encodes time out, retries duplicate them, and a crash restarts a 6-hour job | Async request-reply, split-process-merge |
 | [Gateway bottleneck](scenarios/gateway-bottleneck) | The gateway pins its CPU on auth calls, new connections and one noisy partner | API gateway (auth offloading), connection pool, token bucket |
 | [Join-free feed](scenarios/join-free-feed) | The home feed JOIN pins the database at the evening peak | Materialized view, CQRS, fan-out feed |
+| [Chatbot hallucinates](scenarios/chatbot-hallucinates) | The support bot quotes stale policies and invents a discount | RAG retrieval |
+| [LLM bill explodes](scenarios/llm-bill-explodes) | The LLM bill grows faster than usage, and one tenant burns a month's budget in a day | Semantic cache, model router |
+| [Slow vector search](scenarios/slow-vector-search) | Flat vector search slows linearly; a never-retrained index fails new categories | Vector ANN index |
 | [Release-day buffering](scenarios/release-day-buffering) | A launch makes every CDN edge miss and crash-loops the origin | Tiered cache, serve-stale |
 
 ```sh
@@ -196,6 +208,9 @@ go run ./scenarios/cache-stampede/broken   # then ./fixed
 | A viral post's notifications delaying OTPs or hitting push-provider limits | [Fan-out feed](patterns/architecture/fan-out-feed) (notification dispatcher) |
 | A business transaction spanning several services | [Saga](patterns/distributed/saga-orchestration), rather than [two-phase commit](patterns/distributed/two-phase-commit) |
 | Only one worker may do a job at a time | [Leader election](patterns/distributed/leader-election), [lock with fencing](patterns/distributed/distributed-lock-fencing) |
+| LLM costs or latency too high | [Semantic cache](patterns/ai/semantic-cache), [model router](patterns/ai/model-router) |
+| A chatbot giving confident answers that contradict your own documents | [RAG retrieval](patterns/ai/rag-retrieval) |
+| Vector search too slow to scan every embedding | [Vector ANN index](patterns/ai/vector-ann-index) |
 | Replacing a legacy system | [Strangler fig](patterns/architecture/strangler-fig) |
 
 ## Layout
