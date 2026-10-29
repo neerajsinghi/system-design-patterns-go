@@ -1,6 +1,6 @@
 # Content plan: new patterns and scenarios from two Medium series
 
-*Drafted 2026-10-28. Status: batch 1 (caching depth) implemented, including its 3 scenarios; batches 2–6 proposed.*
+*Drafted 2026-10-28. Status: batches 1 (caching depth) and 2 (concurrency and keys) implemented, with their scenarios; batches 3–6 in progress.*
 
 This plan reviews two Medium sources and turns them into a backlog for this repo. It covers which new patterns to add, which existing patterns to extend, and a new `scenarios/` track of interview walkthroughs that combine patterns.
 
@@ -138,7 +138,7 @@ Effort: **S** ≈ under 150 lines of implementation, **M** ≈ 150–350, **L** 
 | `refresh-ahead` | Synchronised expiry causes stampedes and latency spikes | Three runs: fixed TTL (spikes), TTL jitter (spread out), XFetch probabilistic early refresh (smooth). DB QPS printed per tick | Jitter range; XFetch refresh probability grows near expiry (seeded rand); one refresh per key | S14, Days 7, 8 | M |
 | `two-tier-cache` | One hot key saturates a single shared cache node | L1 in-process (short TTL) in front of L2 shared; a hot key is replicated as `key#0..N` in L2 with random reads; node load is printed | L1 hit avoids L2; replica fan-out on write; invalidation reaches both tiers | S1, Day 8 | M |
 | `cdc-cache-invalidation` | Application-driven invalidation misses writes from other paths | A change feed (reuse the write-ahead-log idea) drives an invalidator; shows the delete-then-stale-set race and the versioned-set fix | Every committed change invalidates; an out-of-order set with an older version is rejected | Day 7 | M |
-| `read-your-writes` | A user updates a profile, refreshes, and sees the old value from a lagging replica | Session tokens carrying the last write LSN; reads go to a replica only once it has caught up, otherwise to the primary | Routing by LSN; fallback to the primary; no stale reads within a session | Day 7 | S |
+| `read-your-writes` *(built as an extension of `read-replicas`, which already had a read-your-writes session; adds portable signed tokens, monotonic reads and a leader-after-write window)* | A user updates a profile, refreshes, and sees the old value from a lagging replica | Session tokens carrying the last write LSN; reads go to a replica only once it has caught up, otherwise to the primary | Routing by LSN; fallback to the primary; no stale reads within a session | Day 7 | S |
 | `optimistic-locking` | Two buyers read the same seat as free and both book it | Version-column compare-and-set: one wins, the other gets a conflict and retries or fails. Contrasted with a mutex (pessimistic) under high contention | Exactly one winner under N goroutines; retry loop with a bound; ABA note | S4 | S |
 | `reservation-hold` | Seats or stock held during checkout are never released | Hold with TTL → confirm or expire; a background reaper returns expired holds; idempotent confirm | Expiry with a fake clock; confirm after expiry fails; no oversell under concurrency | S4 | M |
 | `hot-key-salting` | One partition key (celebrity, flash sale) exceeds a partition's throughput limit | Writes spread across `key#0..K`, reads scatter-gather and merge; per-partition throughput before/after | Even spread; read merges all suffixes; adaptive K for only hot keys | S13, Day 8 | S |

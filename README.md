@@ -3,7 +3,7 @@
 [![CI](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml/badge.svg)](https://github.com/neerajsinghi/system-design-patterns-go/actions/workflows/ci.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/neerajsinghi/system-design-patterns-go.svg)](https://pkg.go.dev/github.com/neerajsinghi/system-design-patterns-go)
 
-**53 system design patterns, each as a small, tested Go implementation you can run in under a second.**
+**58 system design patterns, each as a small, tested Go implementation you can run in under a second.**
 
 Most system design material stops at boxes and arrows. This repo goes one step further: every pattern is real code with tests, a runnable simulation that prints what happens step by step, and a write-up covering the problem, a diagram, trade-offs, when *not* to use it, and real systems that rely on it.
 
@@ -58,13 +58,17 @@ Cache, partition, replicate and persist data at scale.
 [Write-behind cache](patterns/data/write-behind-cache) ·
 [Consistent hashing](patterns/data/consistent-hashing) ·
 [Sharding](patterns/data/sharding) ·
+[Hot-key salting](patterns/data/hot-key-salting) ·
 [Read replicas](patterns/data/read-replicas) ·
 [CQRS](patterns/data/cqrs) ·
 [Event sourcing](patterns/data/event-sourcing) ·
 [Bloom filter](patterns/data/bloom-filter) ·
 [Write-ahead log](patterns/data/write-ahead-log) ·
 [LSM tree](patterns/data/lsm-tree) ·
-[Materialized view](patterns/data/materialized-view)
+[Materialized view](patterns/data/materialized-view) ·
+[Optimistic locking](patterns/data/optimistic-locking) ·
+[Reservation hold](patterns/data/reservation-hold) ·
+[Snowflake IDs](patterns/data/snowflake-id)
 
 ### [Distributed coordination & messaging](patterns/distributed)
 
@@ -99,7 +103,8 @@ Shape services, APIs and traffic flow.
 [Webhook delivery](patterns/architecture/webhook-delivery) ·
 [Scatter-gather](patterns/architecture/scatter-gather) ·
 [Server-sent events](patterns/architecture/server-sent-events) ·
-[Tiered cache](patterns/architecture/tiered-cache)
+[Tiered cache](patterns/architecture/tiered-cache) ·
+[Conditional requests](patterns/architecture/conditional-requests)
 
 Each category page has a table of the problem every pattern solves and its key trade-off.
 
@@ -111,6 +116,8 @@ Production incidents reproduced as runnable before-and-afters: the broken design
 |---|---|---|
 | [Cache stampede](scenarios/cache-stampede) | Every cached key expires at once and floods the database | Refresh-ahead |
 | [Hot short link](scenarios/hot-short-link) | One viral link overloads the cache node that owns it | Two-tier cache |
+| [Seat double-booking](scenarios/seat-double-booking) | Two shoppers get tickets for the same seat | Reservation hold, optimistic locking, idempotency key |
+| [Hot partition](scenarios/hot-partition) | One poll key throttles its table partition | Hot-key salting |
 | [Release-day buffering](scenarios/release-day-buffering) | A launch makes every CDN edge miss and crash-loops the origin | Tiered cache, serve-stale |
 
 ```sh
@@ -131,7 +138,12 @@ go run ./scenarios/cache-stampede/broken   # then ./fixed
 | A cache with a poor hit ratio, or wiped out by batch scans | [Cache eviction](patterns/data/cache-eviction) (W-TinyLFU) |
 | Errors whenever the origin is down, even for cached content | [Serve-stale](patterns/reliability/serve-stale) |
 | A launch stampeding the origin from every CDN edge | [Tiered cache](patterns/architecture/tiered-cache) (origin shield, pre-warming) |
+| Users save a change, refresh, and see the old value | [Read replicas](patterns/data/read-replicas) (session tokens, monotonic reads) |
 | A database that can't keep up with writes | [Sharding](patterns/data/sharding), [write-behind cache](patterns/data/write-behind-cache), [sharded counters](patterns/architecture/sharded-counters) |
+| One key hotter than a whole partition | [Hot-key salting](patterns/data/hot-key-salting), [two-tier cache](patterns/data/two-tier-cache) |
+| Two users booking the same seat | [Optimistic locking](patterns/data/optimistic-locking), [reservation hold](patterns/data/reservation-hold) |
+| Two editors overwriting each other, or clients re-downloading unchanged data | [Conditional requests](patterns/architecture/conditional-requests) (ETag, `If-Match`) |
+| Unique, sortable IDs from many servers without a central counter | [Snowflake IDs](patterns/data/snowflake-id) |
 | Updating a DB and publishing an event atomically | [Transactional outbox](patterns/distributed/transactional-outbox) |
 | A business transaction spanning several services | [Saga](patterns/distributed/saga-orchestration), rather than [two-phase commit](patterns/distributed/two-phase-commit) |
 | Only one worker may do a job at a time | [Leader election](patterns/distributed/leader-election), [lock with fencing](patterns/distributed/distributed-lock-fencing) |
