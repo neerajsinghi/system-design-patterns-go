@@ -1,5 +1,13 @@
 # Cache-Aside (Lazy Loading)
 
+## Explain it like I'm 5
+
+Going down to the cellar for cookies takes ages, so the kitchen has a cookie jar. Look in the jar first. Empty? Fetch cookies from the cellar, fill the jar, and eat. Cookies that sit too long get tossed.
+
+When someone bakes a new batch, they put it in the cellar and empty the jar, so nobody eats the old kind. If five hungry kids find the jar empty at once, only one goes down while the others wait.
+
+*For grown-ups:* The jar is the cache, the cellar is the database, tossing old cookies is the TTL, emptying the jar is invalidation, and the one kid fetching is request coalescing.
+
 ## Problem
 
 Your database serves the same hot rows over and over. Reads are slow and expensive, and the database becomes the bottleneck. You want a cache, but you don't want the cache to be in the write path or to need to know about every table.

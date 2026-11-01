@@ -1,5 +1,13 @@
 # Sidecar
 
+## Explain it like I'm 5
+
+Every kid on our street needs the same chores done: answer the door, check who's there, write down who came, and knock again when a neighbor doesn't answer. Some kids are too little to learn all that, and teaching each one takes forever.
+
+So each house gets a babysitter. Everything going in or out passes through the babysitter, and the kid just keeps building blocks. New door rule? Tell the babysitters, not the kids. The price is one extra person in every house.
+
+*For grown-ups:* The kid is the unmodified app, the babysitter is a proxy process beside it handling request IDs, metrics and retries, and a new door rule is a policy change without redeploying apps.
+
 ## Problem
 
 Every service needs the same plumbing: retries, timeouts, metrics, tracing

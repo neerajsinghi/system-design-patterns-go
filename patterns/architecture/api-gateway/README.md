@@ -1,5 +1,13 @@
 # API Gateway
 
+## Explain it like I'm 5
+
+The zoo has lots of animal houses, and every keeper used to stop every kid to check tickets. It took ages, and kids got lost.
+
+Now there is one front desk and a tall fence, so nobody sneaks past. Sam shows a ticket once. The helper peels off any sticker Sam made at home, adds a real name sticker, and points the way. The keepers just read the sticker and go back to their animals.
+
+*For grown-ups:* The front desk is the gateway, animal houses are backend services, the ticket is a signed token, and the name sticker is a trusted identity header replacing anything the client forged.
+
 ## Problem
 
 Once a system is split into many services, every client has to know every

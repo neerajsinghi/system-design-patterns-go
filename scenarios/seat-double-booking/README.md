@@ -1,5 +1,13 @@
 # Scenario: The Ticketing Site Sells the Same Seat Twice
 
+## Explain it like I'm 5
+
+Tickets for the school play sold fast. Two kids looked at seat five, saw it free, and both took it, and both got tickets. Kids who walked away left seats marked taken, so those stayed empty. And when a payment note arrived twice, families paid twice.
+
+Now choosing a seat puts your name on it for a short time, and only one kid wins. If time runs out, the seat goes back. Before booking, the seat is checked again for changes. Each payment has a number, so repeats count once.
+
+*For grown-ups:* The name is a reservation hold with a deadline, the last check is an optimistic-locking compare-and-set on the seat's version, and the payment number is an idempotency key.
+
 ## The incident
 
 Tickets for a sold-out-in-minutes show go on sale. Within the first hour, the support queue fills with three kinds of complaint. Two people turn up with valid tickets for the same seat, and both have paid. Other people say the seat map showed only a handful of seats left, yet on the night there are empty seats in the stalls. And some customers have been charged twice for one ticket, and have two confirmation emails to prove it. No errors were logged. Every request returned success.

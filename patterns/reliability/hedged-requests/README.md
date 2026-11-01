@@ -1,5 +1,13 @@
 # Hedged Requests
 
+## Explain it like I'm 5
+
+The art class needs glue, and two cupboards hold the same glue. You send Ana to the first one. Usually Ana is back quickly, but once in a while Ana gets stuck behind a jammed door and everyone waits.
+
+So you watch the clock. If Ana isn't back when most trips would be over, you send Ben to the other cupboard. Whoever returns first wins, and you call the other one back. This only works for fetching: two kids sent to feed the fish would feed it twice.
+
+*For grown-ups:* The cupboards are replicas, Ben is the hedge sent after about the p95 delay, calling back cancels the loser, and the fish show why operations must be idempotent.
+
 ## Problem
 
 In a large system, the occasional slow response is a certainty: GC pauses,

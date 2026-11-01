@@ -1,5 +1,13 @@
 # Sharded Counters
 
+## Explain it like I'm 5
+
+At the fair, kids vote for the best pumpkin by dropping a bean in a jar. The jar has a tiny neck, so only one hand fits at a time. The line gets long, and a bigger crowd only makes it longer.
+
+So the helpers set out five jars. You drop your bean into any jar you like, and nobody waits. To get the score, a helper adds up all five. That takes longer, and it can be a bit off while beans are still falling.
+
+*For grown-ups:* The jar is one contended counter row, each extra jar is a shard picked at random on write, and adding them up is a read summing N shards with only approximate consistency.
+
 ## Problem
 
 A single counter that takes heavy write traffic, such as likes on a viral

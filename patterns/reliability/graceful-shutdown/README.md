@@ -1,5 +1,13 @@
 # Graceful Shutdown (Connection Draining)
 
+## Explain it like I'm 5
+
+Closing the swimming pool by blowing a whistle and pulling everyone out mid-splash would be unkind. Families already on the road would find a shut gate, too.
+
+So the lifeguard follows steps. Put up a "closing soon" sign while the pool stays open, and wait a little so families can see it. Shut the gate to new swimmers. Let everyone finish their lap, until last call. Anyone still swimming gets called out and written in a book. Then switch things off, the slide before the pump that feeds it.
+
+*For grown-ups:* The sign is failing readiness, the wait is deregistration delay, the gate closes the listener, last call is the drain deadline, the book is the report, and the order is reverse-order stop hooks.
+
 ## Problem
 
 Every deploy, scale-in and node drain stops processes, and a process that simply exits when told to takes work down with it:

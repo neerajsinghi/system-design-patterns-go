@@ -1,5 +1,13 @@
 # Bulkhead
 
+## Explain it like I'm 5
+
+At Noor's birthday party, all the helpers shared every job. Then the balloon pump got slow. One by one, the helpers went to the balloon table and stood there waiting, until nobody was left to paint faces or cut cake.
+
+Next year, each table got its own two helpers and a tiny bench for waiting. When the balloon bench was full, kids heard "not now" right away, and the cake kept coming. The small price: a bored face painter can't go help at a busy table.
+
+*For grown-ups:* The tables are dependencies, the helpers are fixed concurrent slots per dependency, the bench is a bounded wait queue, and "not now" is immediate rejection when that compartment fills.
+
 ## Problem
 
 A service calls several dependencies from one shared pool of goroutines,

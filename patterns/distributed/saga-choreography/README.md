@@ -1,5 +1,13 @@
 # Saga (Choreography)
 
+## Explain it like I'm 5
+
+Nobody is the boss at this lemonade stand. Everyone just listens and shouts. Ana takes your coins and shouts, "Paid!" Ben hears that and goes to pour. If Ben is out of lemons, Ben shouts, "No lemons!" Ana hears that, hands your coins back, and shouts, "Coins back!" Cy hears that and tells you there's no lemonade today.
+
+It works with no one in charge. The small price: nobody can see the whole plan, and your coins are gone for a moment.
+
+*For grown-ups:* Each kid is a service with its own local transaction, shouts are events on a bus, handing coins back is a compensation, and with no coordinator the flow stays implicit.
+
 ## Problem
 
 Same as any saga: an operation (place an order) spans several services with

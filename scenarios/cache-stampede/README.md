@@ -1,5 +1,13 @@
 # Scenario: The Cache Takes Down the Database
 
+## Explain it like I'm 5
+
+The bakery window had a card for every cake, showing its price, and each card faded after a while. One morning the baker wrote all the cards at once, so they all faded at once. Everyone rushed inside to ask the baker, five people for every cake. The baker couldn't keep up, no new cards got written, and the crowd kept coming back.
+
+Now each card fades at a slightly different time. One person freshens a busy card just before it fades. People asking about one cake share one answer.
+
+*For grown-ups:* The cards are cache entries, fading is the TTL, the baker is the database, and the fixes are TTL jitter, early refresh and request coalescing.
+
 ## The incident
 
 A product catalogue sits behind a cache with a 60-second TTL. A deploy goes out and a warm-up job fills all 1,000 product pages so the new servers start hot. Everything is fine for exactly one minute. Then the database's connection count spikes, queries start timing out, product pages return errors, and the on-call engineer sees that the cache hit ratio has dropped to almost zero. The incident repeats a minute later, and again after that, each time a little smaller.

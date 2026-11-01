@@ -1,5 +1,13 @@
 # Event Sourcing
 
+## Explain it like I'm 5
+
+Noor's piggy bank had a note saying how many coins were inside. Every time it changed, Noor rubbed the number out and wrote a new one. Then one day the coins looked wrong, and nobody could say why.
+
+So now Noor draws a picture diary instead: got three coins, spent one on a sticker. Pages are never rubbed out. To know today's coins, start at page one and count through. To know last week's, stop earlier. A long diary gets a bookmark with the total so far.
+
+*For grown-ups:* Diary pages are append-only events, counting through is replay, stopping earlier is a temporal query, and the bookmark is a snapshot.
+
 ## Problem
 
 A typical table stores only the *current* state: `UPDATE accounts SET balance = 460`. Each update throws away the earlier value and the reason for the change. You can't answer "what was the balance last Tuesday?" or "why did it change?", audit logs drift from the real data, and adding a new view of the history is impossible because the history is gone.

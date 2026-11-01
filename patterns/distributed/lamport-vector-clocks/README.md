@@ -1,5 +1,13 @@
 # Lamport Clocks and Vector Clocks
 
+## Explain it like I'm 5
+
+Three friends at a sleepover add to copies of a treasure map in different rooms, and nobody has a clock. Who drew what first?
+
+Each friend keeps a card with one row per friend. Draw something, add one to your row. When a friend hands you their map, copy any bigger numbers from their card, then add one to your row. Later, compare two cards. If one is bigger or the same in every row, it came after. If each wins somewhere, those friends drew without knowing.
+
+*For grown-ups:* The card is a vector clock; shrink it to one number, taking the bigger plus one, and you get a Lamport clock, which gives an order but cannot spot concurrent writes.
+
 ## Problem
 
 In a distributed system there is no global clock. Physical clocks drift and

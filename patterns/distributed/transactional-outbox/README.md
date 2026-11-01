@@ -1,5 +1,13 @@
 # Transactional Outbox
 
+## Explain it like I'm 5
+
+Kai runs the toy library. When a friend borrows a truck, Kai writes it in the big book and then must tell the shelf keeper. Sometimes the lunch bell rings in between, and the keeper never hears.
+
+So now Kai writes the borrow and a note about it on one page, in one go. Both exist or neither does. Later, a helper reads the page, carries each unsent note, and ticks it off. If the helper forgets to tick, the note goes again, so the shelf keeper ignores repeats.
+
+*For grown-ups:* The book is the database, the note is an outbox row written in the same transaction, the helper is the relay, and repeats are at-least-once delivery that consumers deduplicate.
+
 ## Problem
 
 A service must update its database *and* publish an event ("order placed").

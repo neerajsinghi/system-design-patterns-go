@@ -1,5 +1,5 @@
 // Package gatewaybottleneck simulates the "API gateway becomes the
-// bottleneck" incident. A flash sale starts, traffic triples, and the
+// bottleneck" incident. A flash sale starts, traffic quadruples, and the
 // gateway's CPU pins at 100% while p99 latency goes from tens of milliseconds
 // to seconds, even though every backend is healthy. Three design choices
 // combine to do it:

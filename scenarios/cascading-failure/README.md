@@ -1,5 +1,13 @@
 # Scenario: One Slow Service Takes Down Every Product Page
 
+## Explain it like I'm 5
+
+Helpers packed picnic boxes with a sandwich, an apple, a juice and, if possible, a sticker. One day a sticker kid got very slow. Helpers stood waiting there until nobody was left to pack anything. Hungry kids asked again and again, which made it worse, all for a sticker nobody needed.
+
+Now helpers wait only a moment, and only a few may wait at once. A slow sticker kid gets a rest. If all are slow, helpers stop asking and check back later. The box gets a plain star instead.
+
+*For grown-ups:* Helpers are workers, sticker kids are recommendations instances, asking again is gateway retries, and the fixes are timeouts, a bulkhead, outlier detection, a circuit breaker and a fallback.
+
 ## The incident
 
 An online shop's product page is assembled by a product service. For each page it calls catalog (title, images), pricing and inventory, which the page cannot do without, and a recommendations service for the "you might also like" strip, which it can. On a busy afternoon one of the four recommendations instances starts answering in about three seconds instead of forty milliseconds; a GC-bound JVM, nothing that a health check notices. Within seconds product pages start failing, and not a quarter of them: more than half. Pages that were never going to hit the bad instance fail too, because they cannot get a worker. The API gateway sees timeouts and retries each one twice, so the product service gets more traffic just when it can handle less. An hour later a bad recommendations deploy makes the whole service slow, and the shop is effectively offline for two minutes, even though catalog, pricing and inventory are perfectly healthy throughout.

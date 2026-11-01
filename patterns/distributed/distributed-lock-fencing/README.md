@@ -1,5 +1,13 @@
 # Distributed Lock with Fencing Tokens
 
+## Explain it like I'm 5
+
+Only one kid at a time may build on the big block tower. Teacher hands out turns with a numbered sticker, and each turn lasts until the sand timer ends. Mia gets sticker three, then falls asleep. The sand runs out, so Leo gets sticker four and builds.
+
+Mia wakes up, sure it is still Mia's turn, and reaches for the blocks. Sam, who sits by the tower, remembers the biggest sticker seen so far. "Three is smaller than four. No blocks for you!" Leo's work stays safe.
+
+*For grown-ups:* The sand timer is the lock's lease, stickers are ever-increasing fencing tokens, the nap is a process pause, and Sam is the storage rejecting writes with a stale token.
+
 ## Problem
 
 Several processes on different machines must not modify a shared resource

@@ -1,5 +1,13 @@
 # Leaderboard and Top-K (Skip-List Sorted Set and Space-Saving Heavy Hitters)
 
+## Explain it like I'm 5
+
+After the big race, the kids stand in a long line, best score first. "What place did I come?" meant counting everyone ahead of you. So the line got signs: "Jump to Mia, that skips four kids." Take big jumps, then smaller ones, adding up the skips, and you know your place quickly.
+
+Favourite songs are trickier, because there are too many to count. The scoreboard keeps only ten. A new song bumps the lowest and takes its tally plus one. Tallies can run high, but real hits stay up.
+
+*For grown-ups:* The line is a sorted skip list, signs are forward pointers with span counts, and the ten-spot song board is Space-Saving, whose counts are upper bounds.
+
 ## Problem
 
 A game or contest leaderboard has millions of players and a steady stream of score updates, and almost every page view asks three things:

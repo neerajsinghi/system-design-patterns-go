@@ -1,5 +1,13 @@
 # Tiered Cache (CDN Edges, Origin Shield, Pre-warming)
 
+## Explain it like I'm 5
+
+A new coloring page comes out, and every kid runs to their toy shop counter. Each shop keeps a copy to share, but on the first day no shop has one. They all call the artist at the same moment, and the artist can't keep up.
+
+So a big shop now sits in the middle. Small shops ask the big shop, and it asks the artist just once. For a big launch day, the artist sends the page ahead, so the first kid finds it ready.
+
+*For grown-ups:* Small shops are CDN edges, the big shop is the origin shield that coalesces misses into one fetch, the artist is the origin, and sending ahead is pre-warming.
+
 ## Problem
 
 A content service puts caches close to users (CDN edges, one per city or region), and those edges absorb almost all traffic in steady state. Two situations still hurt the origin:

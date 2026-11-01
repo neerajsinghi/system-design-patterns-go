@@ -1,5 +1,13 @@
 # Timeout and Deadline Propagation
 
+## Explain it like I'm 5
+
+The campfire song starts soon, and you want marshmallows. You ask Ana, who asks Ben, who asks Cara at the far tent. If nobody sets a time, you could wait all night. If each kid picks their own long wait, you give up and leave while Cara is still digging through bags for nobody.
+
+The trick is one time for the whole chain. Each kid passes on how long is left, saving a little for the walk back. Not enough time left? They say so right away.
+
+*For grown-ups:* The song is the edge deadline, each kid is a hop, passing the time along is deadline propagation, the walk back is the reserve, and saying so right away is failing fast.
+
 ## Problem
 
 A call with no timeout can hang forever and hold a goroutine, a connection and

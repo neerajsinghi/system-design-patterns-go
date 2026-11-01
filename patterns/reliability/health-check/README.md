@@ -1,5 +1,13 @@
 # Health Check (Liveness, Readiness, Heartbeats)
 
+## Explain it like I'm 5
+
+Sam couldn't join soccer, so the doctor gave Sam medicine. That was silly. The only trouble was a flooded field, and medicine can't dry a field.
+
+A good doctor asks two questions. "Are you truly sick?" If yes, Sam goes to bed and starts fresh. "Can you play right now?" If no, Sam waits on the bench until the field dries. Friends far away phone in every morning. One quiet day means maybe. Many quiet days means gone, and their spot goes to someone else.
+
+*For grown-ups:* Bed is a restart after a failed liveness probe, the bench is removal from the load balancer after failed readiness, and phone calls are heartbeats that mark silent peers suspect, then dead.
+
 ## Problem
 
 Load balancers and orchestrators need to know which instances to send

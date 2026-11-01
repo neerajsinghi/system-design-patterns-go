@@ -1,5 +1,13 @@
 # Fallback (Graceful Degradation)
 
+## Explain it like I'm 5
+
+Your lemonade stand sells fresh lemonade, but some days the squeezer breaks. Sending every friend away would be silly, so you keep a list of next-best things. First, fresh. If that fails, the jug you made this morning, if it isn't too old. If that's gone, plain water. Only after all that do you say sorry. You tell each friend which one they got.
+
+Short of lemons? Ask Mia's tree, then Sam's, and skip any tree that keeps coming up empty.
+
+*For grown-ups:* Fresh is the primary, the morning jug is the stale value, water is the static default, telling friends is the result's source, and the trees are a failover chain with cooldown.
+
 ## Problem
 
 A product page depends on a dozen services: pricing, reviews,

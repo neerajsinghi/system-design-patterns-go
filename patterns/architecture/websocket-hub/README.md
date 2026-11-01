@@ -1,5 +1,13 @@
 # WebSocket Hub
 
+## Explain it like I'm 5
+
+At summer camp, each kid holds a tin-can phone on a string tied to one cabin helper, and both can talk anytime. Bo's string goes to a different cabin than Alma's. To reach Bo, Alma's helper checks the big camp list, then tells Bo's helper, who talks into Bo's can.
+
+Each kid has a small tray of notes, so a slow listener only slows their own tray. Trays that overflow get that kid unhooked. Helpers also ask, "You there?" No answer means the string gets cut.
+
+*For grown-ups:* The string is a pinned WebSocket, the cabin helper is a node's hub, the camp list is the connection registry, trays are bounded send queues, and asking is a ping/pong heartbeat.
+
 ## Problem
 
 Chat, live location, multiplayer state and collaborative editing need messages

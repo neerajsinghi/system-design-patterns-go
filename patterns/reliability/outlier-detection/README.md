@@ -1,5 +1,13 @@
 # Outlier Detection (Passive Ejection)
 
+## Explain it like I'm 5
+
+Five helpers serve lunch. One helper gets slow, not sick, just slow. Ask "Are you okay?" and the answer is "Yes." But every fifth kid now stands in the lunch line for ages.
+
+The cook starts quietly watching how fast each helper serves compared with the others. Much slower? That helper takes a break, a longer one if it happens again, then comes back and gets watched afresh. Only a few helpers can be on break at once, though. If everyone is slow, the trouble isn't the helpers.
+
+*For grown-ups:* Helpers are hosts, watching real serving is a passive EWMA compared with the pool median, the break is a growing ejection time, and the few-at-once rule is the maximum ejection percentage.
+
 ## Problem
 
 Some failures make a host slow without making it dead: a JVM or Go process

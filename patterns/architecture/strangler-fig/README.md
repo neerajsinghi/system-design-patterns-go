@@ -1,5 +1,13 @@
 # Strangler Fig
 
+## Explain it like I'm 5
+
+The old playground is falling apart, but kids play there every day, so nobody can shut it for a whole summer to build a new one.
+
+Instead, the new playground grows right next door, and a helper stands at the one gate. First the new swings open. The helper sends a few kids over, always the same kids, then more. If a swing wobbles, everyone goes straight back. Slide by slide, the old playground empties, until it can finally come down.
+
+*For grown-ups:* The gate helper is the routing facade, swings and slides are capabilities moved one at a time, the few kids are a sticky percentage rollout, and going back is instant rollback.
+
 ## Problem
 
 You need to replace a legacy system, but a big-bang rewrite is risky. It takes

@@ -1,5 +1,13 @@
 # Idempotency Key
 
+## Explain it like I'm 5
+
+You hand your coin to the ice cream truck, but the music is so loud you can't hear if it worked. Pay again and you might pay twice. Walk off and you might get nothing.
+
+The fix is a star sticker, and you hold up the same one every time you ask. The driver writes each sticker in a book with what happened. See that sticker again? "Already done, here is your cone." If your sticker comes with a different order, the driver knows something got mixed up.
+
+*For grown-ups:* The sticker is the idempotency key, the book stores each claimed key with its saved response, repeats get a replay, and a different order with one sticker is a fingerprint mismatch.
+
 ## Problem
 
 A client sends `POST /charges`. The server charges the card, but the response

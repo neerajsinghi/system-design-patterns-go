@@ -1,5 +1,13 @@
 # Vector ANN Index (IVF)
 
+## Explain it like I'm 5
+
+You love a book about a friendly dragon and want the most similar books in the library. Comparing yours with every book on every shelf would take until bedtime, and longer each year.
+
+So the books get sorted into rooms of like books, with one sample book at each door. You compare your book with the door samples and search only the closest room or two. You might miss a great match next door. Check more rooms to miss less. When new kinds of books arrive, sort the rooms afresh.
+
+*For grown-ups:* Books are vectors, rooms are IVF inverted lists, door samples are k-means centroids, rooms checked is nprobe trading recall for work, and re-sorting is retraining after drift.
+
 ## Problem
 
 Semantic search, RAG retrieval, recommendations and deduplication all come down to the same query: *give me the k stored vectors most similar to this one*. The simple answer is a **flat** (brute-force) index that scores the query against every stored vector:

@@ -1,5 +1,13 @@
 # CDC Cache Invalidation
 
+## Explain it like I'm 5
+
+The school lunch board kept showing the wrong food. Some helpers changed the cook's book and forgot to wipe the board. One slow kid copied out the old soup, the board got wiped, and then the kid wrote the old soup back up.
+
+Now one helper reads every new line in the cook's book and wipes what changed, leaving a note: "Nothing older than page six." The slow kid's old copy gets turned away. Reading a line twice does no harm. The board is only as late as the helper.
+
+*For grown-ups:* The board is the cache, the cook's book is the commit log read by CDC, page numbers are row versions, and the note is a tombstone rejecting late stale sets.
+
 ## Problem
 
 [Cache-aside](../cache-aside) usually invalidates from application code: "update the database, then delete the cache key". That rule has two weak spots:

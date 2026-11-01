@@ -1,5 +1,13 @@
 # Write-Ahead Log (WAL)
 
+## Explain it like I'm 5
+
+Ravi builds a huge block castle, but at bedtime it sometimes gets swept away mid-build. Saving the whole castle after each block would take forever. So before placing any block, Ravi writes one line on a long paper strip: "Red block on the left tower." Only then does Ravi place it.
+
+Next morning, Ravi follows the strip and builds it all back. If the last line was left half written, its check mark is missing, so that line gets skipped. The strip does grow long.
+
+*For grown-ups:* The strip is the append-only log synced before applying, following it is crash replay, the missing check mark is a failed checksum on a torn write, and its growth calls for checkpoints.
+
 ## Problem
 
 A database applies changes to in-memory structures and data pages. If the process crashes or the power goes out halfway through, memory is gone and pages on disk may be partly updated. Some committed transactions are lost, and some uncommitted ones are half-applied. Forcing every data page to disk on every change would be far too slow, because those writes are random.

@@ -1,5 +1,13 @@
 # Backpressure
 
+## Explain it like I'm 5
+
+A toy machine makes teddy bears faster than Ravi can wrap them. The bears pile up on the belt, higher and higher, until the whole heap crashes down and every unwrapped bear is lost.
+
+So the belt gets a small tray that holds only four bears. Everyone picks one rule ahead of time for when the tray is full: stop the machine until there is room, toss the extra bears and count them, or ring a bell that says slow down. Nothing piles up in secret anymore.
+
+*For grown-ups:* The tray is a bounded queue, the machine is the producer, Ravi is the consumer, and stop, toss and bell are the Block, Drop and Signal policies.
+
 ## Problem
 
 A producer generates work faster than its consumer can process it. With an

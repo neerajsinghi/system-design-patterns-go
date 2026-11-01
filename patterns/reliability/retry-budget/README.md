@@ -1,5 +1,13 @@
 # Retry Budget
 
+## Explain it like I'm 5
+
+On the school bus, the rule was "ask up to three times." Then the driver's speaker went crackly, and nobody heard the answers. Every kid asked three times, and the poor driver could barely think.
+
+These days there's a small jar of marbles too. Every ten new questions add one marble, and asking again costs one marble. The jar is small, so a quiet week can't save up a heap. Empty jar? No asking twice. Some kids miss an answer, but the driver gets some peace.
+
+*For grown-ups:* Marbles are retry tokens earned by first attempts at a 0.1 ratio, the small jar is the balance cap, and the three-time rule stays as the per-request attempt limit.
+
 ## Problem
 
 A retry limit like "up to 3 attempts" applies to each request, so it does nothing to limit the client as a whole. It is fine while failures are rare, but when a dependency gets sick it turns against you:

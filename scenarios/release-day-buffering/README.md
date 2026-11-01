@@ -1,5 +1,13 @@
 # Scenario: Everyone Buffers When the New Season Drops
 
+## Explain it like I'm 5
+
+A new storybook came out at noon. Every town library had no copy, and all ran to the one printer at once. The printer collapsed, got back up, and they all ran back, so it collapsed again. Later, when the printer closed for a while, libraries whose copies had grown too old had nothing to lend.
+
+Now copies reach every library before noon. A big middle library does the asking, so the printer hears just one ask. If the printer is closed, the middle library lends its older copy.
+
+*For grown-ups:* Libraries are CDN edges, the printer is the origin, the middle library is an origin shield, early copies are pre-warming, and lending old copies is serve-stale.
+
 ## The incident
 
 A streaming service releases a new season at 12:00. At 12:00:01 every CDN edge in the country is asked for episode 1's manifest, none of them has it, and all of them fetch it from the origin at once. The origin, sized for steady-state refill traffic, falls over. Viewers see endless buffering. A minute later the origin restarts and immediately falls over again. Engineers watch it crash-loop for an hour, and the incident only ends when someone manually blocks edge traffic and lets it recover. Two days later, an unrelated bad deploy takes the origin down for 90 seconds, and every edge whose cache entry expires in that window starts showing errors too.

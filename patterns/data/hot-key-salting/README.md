@@ -1,5 +1,13 @@
 # Hot-Key Salting (Write Sharding of Partition Keys)
 
+## Explain it like I'm 5
+
+Helpers carry birthday cards to the classroom cubbies, and each helper looks after some of the cubbies. No helper can carry more than so many cards. On Sam's birthday, everyone sends one. Sam's helper gets swamped and turns cards away, even for other kids, while the other helpers stand idle.
+
+The trick: give Sam several cubbies, Sam one, Sam two, Sam three, with different helpers. Each card goes to any of them. To count Sam's cards, you must open them all, so only very popular kids get extra cubbies.
+
+*For grown-ups:* Helpers are partitions with write limits, Sam is the hot key, extra cubbies are salted suffixes, opening them all is a scatter-gather merge, and giving extras only to busy kids is adaptive salting.
+
 ## Problem
 
 Partitioned stores (DynamoDB, Cassandra, Bigtable, a Kafka topic) hash each partition key to exactly one partition, and each partition has its own throughput ceiling. DynamoDB, for example, documents roughly 1,000 write units per second per partition. When one logical key gets more writes than that, such as a celebrity's post collecting likes, a flash-sale product's stock events, or a time-series table keyed by today's date, every write for it lands on the same partition:

@@ -1,5 +1,13 @@
 # Bloom Filter
 
+## Explain it like I'm 5
+
+The club keeps its full list of members in a big book up in the attic, and climbing up each time is slow. Most kids who ask never joined anyway. So a sticker chart hangs by the door. Each name always points to the same three squares, and joining puts a star on all three.
+
+Is Theo in the club? Check Theo's three squares. One empty means no, for sure. All starred means probably, because other kids' stars can land there. Only then do you climb to the attic.
+
+*For grown-ups:* The chart is the bit array, each name's three squares come from the hash functions, and the attic book is the real lookup that settles a false positive.
+
 ## Problem
 
 You need to ask "have I seen this key?" millions of times a second: is this username taken, is this URL already crawled, does this SSTable contain this key, is this password in a breach list. Most answers are "no". Keeping the full set in memory is too expensive, and asking the database or disk each time is too slow.

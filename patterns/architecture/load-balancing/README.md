@@ -1,5 +1,13 @@
 # Load Balancing
 
+## Explain it like I'm 5
+
+Everyone at the grocery store used to pick the first checkout line. One cashier was buried in carts while the others had nothing to do. So a helper at the front sent shoppers to each line in turn. That worked until one cashier got slow. Shoppers kept arriving, and that line kept growing.
+
+Now the helper peeks at two lines and points you to the shorter one. The slow line gets fewer new shoppers, and everyone gets home sooner.
+
+*For grown-ups:* Cashiers are service replicas, the helper is the load balancer, sending shoppers in turn is round robin, and comparing two lines is power of two choices using in-flight counts.
+
 ## Problem
 
 You have N replicas of a service and a stream of requests. If you send traffic

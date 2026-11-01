@@ -1,5 +1,13 @@
 # Conditional Requests (ETag, If-None-Match, If-Match)
 
+## Explain it like I'm 5
+
+Our class keeps one big story, with a number in the corner, and every kid has a copy. Mia used to ask for a whole new copy each day. Now Mia asks, "Is it still number three?" The teacher says, "Yes, keep yours." No copying needed.
+
+Mia and Leo both hold number three. Mia fixes the title, so the story becomes number four. Leo's change says it came from three. "Too old," says the teacher. "Look again, then add your part." Nobody's work gets lost.
+
+*For grown-ups:* The corner number is the ETag; asking if it's unchanged is If-None-Match answered by a 304; Leo's stale edit is an If-Match write rejected with 412, then re-read and retried.
+
 ## Problem
 
 HTTP clients keep asking for things they already have, and keep overwriting things they no longer have.

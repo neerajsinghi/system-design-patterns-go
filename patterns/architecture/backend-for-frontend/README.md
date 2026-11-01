@@ -1,5 +1,13 @@
 # Backend for Frontend (BFF)
 
+## Explain it like I'm 5
+
+One kitchen feeds very different guests. The grown-ups' table wants every dish with all the sides. The tiny table only wants a small plate, fast. A single waiter kept bringing the tiny table far too much food.
+
+So each kind of table now has its own waiter. Both order from the same kitchen, and the cooks still decide the recipes. The tiny table's waiter cuts everything small, and if the soup runs out, still brings the rest and says so.
+
+*For grown-ups:* The kitchen is the shared domain services, each waiter is a per-client BFF that trims and composes responses, and bringing the rest without soup is that client's own degraded response.
+
 ## Problem
 
 A web dashboard, a phone app, and a smart-TV app need different data from the

@@ -1,5 +1,13 @@
 # Materialized View (Incremental Maintenance)
 
+## Explain it like I'm 5
+
+How many jars of each kind are in the pantry? Every time someone asked, a kid went in and counted every single jar, which took ages. Now a chalkboard on the door keeps the totals.
+
+A jar comes in: add one. A jar goes out: take one away. Swap jam for honey: one off jam, one on honey. Every change comes on a numbered slip, and a missing slip stops everything, because the board would stay wrong. The price is that every change now means extra chalk work.
+
+*For grown-ups:* The chalkboard is the materialized view, slips are the ordered change stream with LSNs, add and subtract are deltas, and chalk work is the write-side cost, which feed rows multiply by fan-out.
+
 ## Problem
 
 A dashboard runs `SELECT customer, COUNT(*), SUM(amount) ... GROUP BY customer` over a large orders table on every page load. The query scans millions of rows to produce a few, and it competes with the transactional workload. Caching the result helps until it goes stale. Recomputing it on a schedule makes it stale *and* still expensive.

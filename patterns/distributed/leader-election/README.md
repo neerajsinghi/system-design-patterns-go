@@ -6,6 +6,14 @@
 > Consul, or a database row updated with compare-and-swap, or use a consensus
 > library rather than writing your own.
 
+## Explain it like I'm 5
+
+Only one kid can be line leader, or the class walks off in two directions. The leader wears a numbered badge and must keep running back to flip the sand timer on Teacher's desk.
+
+If Ada gets stuck and can't flip it, Ada stops leading when the sand runs out. Then Bo takes the next badge, with a bigger number. If Ada was just napping and wakes up still giving orders, the lunch helper sees the smaller number and says no. There is a short wait with no leader.
+
+*For grown-ups:* The timer is a lease in a consistent store, flipping it is renewal, the badge number is the term, and the lunch helper is a resource rejecting writes from a deposed leader.
+
 ## Problem
 
 Several replicas of a service are running, but some work must be done by

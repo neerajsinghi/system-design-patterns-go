@@ -1,5 +1,13 @@
 # Idempotent Consumer (Inbox)
 
+## Explain it like I'm 5
+
+Notes travel across the classroom saying "Give Nia one sticker." The kid passing a note never hears if it got there, so sometimes a copy gets sent too. Nia ends up with extra stickers.
+
+Now every note gets a number in the corner before it leaves, and copies keep that number. Nia keeps a list. The sticker and the number on the list happen in one move. Seen that number? Nia skips it. The list gets cleaned out sometimes, so a very old copy could still sneak through.
+
+*For grown-ups:* The corner number is the message ID, copies are at-least-once redeliveries, the list is an inbox table committed in one transaction with the effect, and cleaning it is the dedup window.
+
 ## Problem
 
 Message brokers and logs (Kafka, SQS, RabbitMQ, a chat server's delivery queue) promise **at-least-once** delivery, which is a polite way of saying "duplicates will happen". They come from three places:

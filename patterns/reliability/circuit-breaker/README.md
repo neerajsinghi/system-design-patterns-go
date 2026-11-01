@@ -1,5 +1,13 @@
 # Circuit Breaker
 
+## Explain it like I'm 5
+
+The drinking fountain at the playground broke. Every thirsty kid still walked all the way over, pressed the button, waited and waited, and crowded around while the fixer tried to work.
+
+After a few kids came back dry, a "closed" sign went up on the path. Now kids turn around right away and go back to playing. After a while, one kid gets to go and test it. If water comes, the sign comes down. If not, the sign stays and the wait starts over.
+
+*For grown-ups:* The fountain is a failing dependency, the sign is the open breaker failing fast, the dry kids are the failure threshold, and the one tester is the half-open probe.
+
 ## Problem
 
 When a dependency is down or badly degraded, every call to it waits for a

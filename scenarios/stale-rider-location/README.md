@@ -1,5 +1,13 @@
 # Scenario: The Map Shows the Rider in the Wrong Place
 
+## Explain it like I'm 5
+
+Kids watched the pizza rider as a dot on a map. The dot moved only now and then, from an old note, so the rider rang the bell while the map said far away. Late notes replaced newer ones, and the dot jumped backward. In a tunnel, the dot sat there looking sure.
+
+Now notes carry the time, and older ones are tossed. Each new spot comes right to you, newest only, even if you change rooms. If the rider goes quiet, the map says, "Last seen a while ago."
+
+*For grown-ups:* The dot is the shown position, notes are GPS fixes, timestamps reject late writes, quiet riders lose their presence lease, and pushes run over routed WebSockets with a one-slot drop-oldest queue.
+
 ## The incident
 
 A food-delivery app shows customers their rider on a live map. Complaints start arriving at dinner time. One customer's rider is "still a kilometre away" while ringing the doorbell. Another watches the dot move towards them, then jump back a few streets. A third sees the rider "moving" at the same spot for two minutes: the rider's phone had lost signal in a basement car park, and the app gave no sign that the dot had stopped updating. Support can't tell customers anything useful, because the map is wrong in a different way for each of them. During the investigation the team also finds that, after one of the customer-facing gateway nodes restarted, its customers' updates kept going to that node for a while before the routing caught up.

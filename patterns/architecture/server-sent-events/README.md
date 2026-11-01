@@ -1,5 +1,13 @@
 # Server-Sent Events (SSE)
 
+## Explain it like I'm 5
+
+Story time at the library just keeps going, part after part, and the kids only listen. Every part has a number.
+
+Omar leaves for a potty break and remembers the last number heard. Back on the rug, Omar whispers, "I heard up to two." A helper reads parts three and four from a notebook, then Omar joins the live story. Nothing is missed and nothing is heard twice. The notebook only keeps the newest parts, so after a very long break, Omar has to start over.
+
+*For grown-ups:* The reader is a one-way event stream, part numbers are event IDs, Omar's whisper is Last-Event-ID, the notebook is bounded replay history, and starting over is the reset event.
+
 ## Problem
 
 Browsers and services often need a live stream of server updates, such as

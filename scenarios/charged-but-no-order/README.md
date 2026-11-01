@@ -1,5 +1,13 @@
 # Scenario: Payment Deducted, but No Order
 
+## Explain it like I'm 5
+
+At the toy shop, Mia paid, but the coin counter answered slowly, so the shopkeeper said, "Payment failed." Mia's coins were gone and there was no toy. Paying again took more coins. Sometimes the shopkeeper got called away mid-sale and forgot it, and the delivery kid heard about the wrong toys.
+
+Now every step goes in a notebook, so anyone can finish the sale. Each sale has its own number, so paying twice counts once. Sales that can't finish give the coins back. Delivery notes go in the same notebook.
+
+*For grown-ups:* The notebook is the saga's saved state and transactional outbox, the sale number is the idempotency key, and giving coins back is compensation.
+
 ## The incident
 
 An online shop's checkout runs four steps in one request handler: create the order, reserve the stock, charge the card, confirm the order. The payment call is synchronous. On a busy evening the payment provider slows down. Charges still go through, but some responses arrive after the order service's 3-second timeout. The order service treats a timeout as a failure and shows "Payment failed, please try again". The customer has been charged. Some customers give up and file a chargeback. Others press Pay again, get a second charge, and this time an order. A few deploys that week also killed order-service pods mid-checkout, with the same result. Meanwhile, fulfilment ships an order that support can't find in the database, and some orders that are in the database never ship, because fulfilment never heard about them.

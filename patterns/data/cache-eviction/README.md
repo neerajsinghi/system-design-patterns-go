@@ -1,5 +1,13 @@
 # Cache Eviction Policies (FIFO, LRU, LFU, W-TinyLFU)
 
+## Explain it like I'm 5
+
+Your toy box is full, so every new toy pushes an old one out. Which one? Drop whichever you haven't touched lately, and a friend's big bag of toys, each played with once, shoves out your teddy. Drop the least played, and a baby rattle you loved long ago stays forever.
+
+So new toys wait in a tiny basket first. A toy leaving the basket must beat a toy from the box on a tally of plays. Tallies get cut in half now and then, so old love fades.
+
+*For grown-ups:* The basket is the window LRU, the box is the main region, the tally is the count-min sketch, halving is its reset, and the friend's bag is a scan.
+
 ## Problem
 
 A cache has a fixed amount of memory. Once it is full, every new entry forces an old one out, and the choice of victim decides the hit ratio. A bad choice quietly turns your cache into a pass-through.
@@ -51,7 +59,7 @@ flowchart LR
 - `Sketch` is a count-min sketch: four rows of one-byte counters, 8 × capacity wide. One 64-bit `maphash` of the key is split into four row indexes by double hashing. Counters saturate at 15 (Caffeine uses 4-bit counters), and after 10 × capacity increments every counter is halved.
 - `Replay` runs a trace through a policy as a read-through cache and returns hits and misses. The tests and the example use it to compare policies on the same workload.
 
-**Simplifications.** Caffeine's main region is a segmented LRU (probation and protected), its window size adapts by hill climbing, and it adds a "doorkeeper" Bloom filter so one-off keys don't touch the sketch at all. Its counters are packed four bits each, so the sketch costs about 8 bytes per entry; this one uses 32. The admission idea is the same.
+**Simplifications.** Caffeine's main region is a segmented LRU (probation and protected), and its window size adapts by hill climbing. Its counters are packed four bits each, so the sketch costs about 8 bytes per entry; this one uses 32. The admission idea is the same.
 
 ## Trade-offs
 

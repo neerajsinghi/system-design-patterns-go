@@ -1,5 +1,13 @@
 # Read Replicas (Leader-Follower Replication)
 
+## Explain it like I'm 5
+
+At summer camp, everyone kept asking the one camp leader what was happening today, and the leader couldn't keep up. So now only the leader writes new plans on the big board. Helpers copy them onto small boards around camp, and kids ask the helpers. Copies run a bit late.
+
+You add "swim at noon," ask a helper, and it isn't there. So your wristband gets a stamp showing which line your plan is on. A helper who hasn't reached that line sends you to the leader.
+
+*For grown-ups:* The leader and helpers are leader and followers, late copies are replication lag, and the wristband stamp is a session token carrying the log position for read-your-writes.
+
 ## Problem
 
 Reads outnumber writes 10:1 or 100:1, and the primary database is saturated by read traffic. Sharding is overkill, since the data fits on one node, but one node can't serve all the reads.

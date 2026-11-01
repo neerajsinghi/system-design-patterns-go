@@ -1,5 +1,13 @@
 # Two-Tier Cache (L1 In-Process + L2 Shared, with Hot-Key Replication)
 
+## Explain it like I'm 5
+
+At the zoo's help desk, each question goes to its own window. Then everyone wanted to know when the penguins eat, and the penguin window got a huge line. Every other question at that window got stuck too, while other windows sat quiet.
+
+First fix: each group leader remembers the answer for a few minutes and stops asking. Second fix: several windows learn the penguin answer, and you pick any. The price: if feeding time changes, leaders stay wrong until they forget, and every window must be told.
+
+*For grown-ups:* Leaders' memory is the L1 in-process cache with a short TTL, windows are L2 cache nodes, the penguin question is the hot key, and several windows are hot-key replicas.
+
 ## Problem
 
 A shared cache cluster (Redis Cluster, a Memcached pool) spreads keys across nodes by hash, so its capacity grows with the node count. But every key lives on exactly **one** node. When a single key goes viral (a short link shared during a cricket final, a celebrity's post, a flash-sale product), every request for it lands on the same node:

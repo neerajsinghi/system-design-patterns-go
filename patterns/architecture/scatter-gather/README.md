@@ -1,5 +1,13 @@
 # Scatter-Gather
 
+## Explain it like I'm 5
+
+The birthday party is about to start, and the balloons are hiding somewhere in the house. Looking in one room at a time takes forever. Waiting for everyone to come back is no better, because one friend stuck in the attic holds up the whole party.
+
+So Priya sends five friends to five rooms at once and says, "Come back when I clap." At the clap, Priya uses whatever came back, notes which rooms got missed, and the party starts on time.
+
+*For grown-ups:* Friends are parallel calls to independent sources, the clap is the deadline that cancels stragglers, and missed rooms are the Missing and Failed lists returned with partial results.
+
 ## Problem
 
 Answering one request may need data from many independent sources: the

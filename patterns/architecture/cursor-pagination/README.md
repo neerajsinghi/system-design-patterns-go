@@ -1,5 +1,13 @@
 # Cursor Pagination
 
+## Explain it like I'm 5
+
+The art table has a tall pile of drawings, newest on top. Nia looks at three at a time and says, "Next, skip the top three." But while Nia looks, friends add new drawings on top. Now the top three are different, and Nia sees old ones again.
+
+So the teacher gives Nia a stamped card: "You stopped at the blue fish." Next time, Nia gets only drawings older than that. New ones on top change nothing. The one price is that Nia can't jump to the middle.
+
+*For grown-ups:* "skip the top three" is OFFSET, the blue fish is the keyset position (created_at, id), and the teacher's stamp is the HMAC signature that makes the cursor opaque and tamper-proof.
+
 ## Problem
 
 `LIMIT 20 OFFSET 40` looks harmless, but it has two problems.
@@ -110,4 +118,4 @@ go test ./patterns/architecture/cursor-pagination/
 - [Fan-out feed](../fan-out-feed): the timelines that are usually paged this way.
 - [Read replicas](../../data/read-replicas): paged reads are often served from replicas, where replication lag interacts with cursors.
 - [Materialized view](../../data/materialized-view): precomputed, indexed lists that make keyset seeks cheap.
-- [Webhook delivery](../webhook-delivery): another place HMAC signing protects data that clients send back.
+- [Webhook delivery](../webhook-delivery): another place HMAC signing proves who produced the data: the sender signs each delivery and the receiver verifies it.
