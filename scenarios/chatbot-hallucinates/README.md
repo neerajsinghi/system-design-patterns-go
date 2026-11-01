@@ -1,5 +1,13 @@
 # Scenario: The Support Chatbot Makes Things Up
 
+## Explain it like I'm 5
+
+A new helper at the sofa shop answered every question from memory. "You have two weeks to bring it back," said the helper, but that rule had changed. The helper even promised a special deal nobody had made.
+
+So the shop tore the rule book into tiny scraps. Scraps rarely held the answer, and the wrong answers went on. Now the helper reads whole sections, searches by exact words and by meaning, and must point to the sentence used. If nothing fits, the helper says, "I don't know."
+
+*For grown-ups:* The helper is the language model, memory is its training, scraps are fixed-size chunks, and the fixes are heading chunks, hybrid retrieval, required citations and a refusal gate.
+
 ## The incident
 
 Pebblebrook Home, a fictional home-goods retailer, launches a support chatbot on a general-purpose language model. Within a week, support agents are cleaning up after it. It tells customers they have 14 days to return an item, but the policy has said 30 since March. It hands out a 20% discount code that nobody ever created. It quotes a free-shipping threshold of $35, the figure the model learned in training, when the help centre now says $50. Customers who act on these answers get refused at the warehouse or at checkout, then complain that "your own bot told me so".

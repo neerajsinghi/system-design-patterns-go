@@ -1,5 +1,13 @@
 # Two-Phase Commit (2PC)
 
+## Explain it like I'm 5
+
+The class wants a big toy swap, but it only happens if everybody can do it. So Teacher takes a vote. Voting yes means holding your toy tight, letting nobody else play with it, and promising not to change your mind. One no, and everybody keeps their toy.
+
+All yes? Teacher writes "swap" in a notebook, then tells everyone. But if Teacher steps out before deciding, all the kids just sit there, stuck holding their toys. Back in the room, Teacher sees no "swap" written and calls it off.
+
+*For grown-ups:* Teacher is the coordinator, the vote is the prepare phase, held toys are locks, the notebook is the durable decision log, and stuck kids are in-doubt participants until presumed abort.
+
 ## Problem
 
 A transaction must update data owned by several independent resource managers

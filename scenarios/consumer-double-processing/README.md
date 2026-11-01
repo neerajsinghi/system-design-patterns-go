@@ -1,5 +1,13 @@
 # Scenario: The Consumer Credits the Same Order Twice
 
+## Explain it like I'm 5
+
+At reading club, a helper goes through a stack of cards and gives a star per finished book. The helper marks the spot only now and then. When helpers swapped, the new one started from the last mark and gave the same stars again. Then came a smudged card. The helper quit, started over, gave more stars, and reached the same card.
+
+Now each star goes on a "done" list, so repeats get skipped. A smudged card gets a few tries, then waits in a side box for later.
+
+*For grown-ups:* The stack is the topic, the mark is the committed offset, the done list is the idempotent consumer's inbox, and the side box is the dead-letter queue.
+
 ## The incident
 
 A loyalty service reads order events from a Kafka-style topic. For each order it credits the customer's points and sends a "you earned points" email. On a Tuesday afternoon the team rolls out a new build. Within the hour, support hears from customers who got two emails for one order and see double points in their account. Nobody touched the loyalty code in that release. While the team is still looking into it, a second alert fires: consumer lag on the topic is climbing and won't come down. One instance is in CrashLoopBackOff. Every time it restarts, it dies on the same event, and every restart produces another batch of duplicate emails, this time for customers who ordered minutes ago.

@@ -1,5 +1,13 @@
 # Reservation Hold (TTL holds with a reaper)
 
+## Explain it like I'm 5
+
+Two friends want the last seats at the puppet show, but their coins are at home. Saving seats until someone says "never mind" leaves empty chairs, because kids just wander off. So the seats get saved with a sand timer, both together or neither.
+
+Back with coins before the sand runs out? The seats are yours, and asking again gets the same yes. Too late? Sorry, here are your coins back. Anyone asking for those seats spots a finished timer, and a helper also walks around collecting them.
+
+*For grown-ups:* Sand timers are TTL holds, both-or-neither is an all-or-nothing hold, the same yes is idempotent confirm, spotting a finished timer is lazy expiry, and the helper is the reaper.
+
 ## Problem
 
 Checkout is not instant. Between "I want these two seats" and "payment succeeded" there are minutes of form filling, 3-D Secure prompts and slow payment providers. Something has to stop a second shopper from paying for the same seats in that gap, and every simple answer goes wrong in one of two directions:

@@ -1,5 +1,13 @@
 # Scenario: OTP Codes Stop Arriving at Peak Traffic
 
+## Explain it like I'm 5
+
+On report card day, every child needed a secret word, and one runner carried the words. When the runner slowed down, the office sent three tries, each child asked three times, and worried kids asked again. The runner got buried. Each new word cancelled the last, so late words no longer worked. A few pranksters kept asking too.
+
+Now extra tries are rare. After a few failures, the office stops using that runner and uses a second runner, then a phone call. Each child gets three asks, then must wait.
+
+*For grown-ups:* The runner is the SMS provider, words are OTPs, and the fixes are a retry budget, a circuit breaker, a fallback chain to secondary SMS and voice, and a per-number sliding-window limit.
+
 ## The incident
 
 Exam results go live at 10:00 and tens of thousands of students try to log in with a one-time code sent by SMS. Two minutes in, the SMS provider starts struggling: its submit API slows to several seconds and fails most calls. Our API servers try the provider three times per request. The mobile app retries a failed request three times. Students who see no code tap "resend". Within a minute the provider gets thirty times the normal number of calls, fails even more of them, and the few messages it accepts sit in its backlog for half a minute or longer. Codes then arrive late and several at once, and most of them have already been replaced by a newer resend, so students type codes that no longer work. Support fills up with "I never got my OTP". Meanwhile a handful of numbers controlled by a script request a code every few seconds, and every one of those requests gets the same triple retry treatment. A third of the SMS bill pays for messages nobody can use.

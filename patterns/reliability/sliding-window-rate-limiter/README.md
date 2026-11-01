@@ -1,5 +1,13 @@
 # Sliding Window Rate Limiter
 
+## Explain it like I'm 5
+
+The pony can give five rides an hour. The old rule counted rides until the big clock chimed, then started over. So kids rode five times just before the chime and five times just after. That's ten rides in a blink, and one very tired pony.
+
+Now the helper writes the time of each ride on a board. Before a new ride, the helper wipes off any ride from more than an hour ago, then counts what's left. Fewer than five? Hop on.
+
+*For grown-ups:* The chime is a fixed-window reset, the board is a sliding log of timestamps, and wiping old rides caps every hour-long stretch at the limit; the counter variant estimates this using less memory.
+
 ## Problem
 
 Quotas are usually phrased as "N requests per window": 100 per minute per API

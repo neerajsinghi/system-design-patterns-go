@@ -1,5 +1,13 @@
 # Scenario: Surge Pricing Misses the Rain
 
+## Explain it like I'm 5
+
+When rain hit downtown, everyone wanted a taxi. But the taxi boss set one price for the whole city, after checking a stack of old calls every so often. So the rainy side stayed too cheap, no extra drivers came, and people waited. The dry side paid extra for nothing. After the rain stopped, the price went up anyway.
+
+Now each neighborhood has its own price, counted fresh every minute. Late calls count at the time they were made. Drivers see a high price nearby and head toward the rain.
+
+*For grown-ups:* Neighborhoods are geohash cells, the stack is a 15-minute batch job, the fresh count is a sliding event-time window with a watermark, and the price is demand over supply per cell.
+
 ## The incident
 
 At 18:00 a shower starts over downtown and the east side. Within three minutes ride requests there are three times normal. The pricing service doesn't notice. It computes one demand/supply ratio for the whole city from a batch job that runs every 15 minutes over the requests that reached the server in that period. The first batch that includes the rain finishes at 18:15, and it shows a modest city-wide 1.24x. Downtown, where riders outnumber drivers two to one, gets 1.24x. The dry suburbs, where drivers are waiting for work, also get 1.24x, and some of their riders give up on the price. Nothing pulls drivers toward the rain, so downtown riders queue for up to ten minutes and some give up. The rain stops at 18:30. The 18:30 batch, still full of rain-time requests, raises the surge to 1.29x for everyone until 18:45. On top of that, phones in the rain have a bad connection: their requests arrive seconds to minutes late and are counted in the minute they arrived, not the minute they were made.

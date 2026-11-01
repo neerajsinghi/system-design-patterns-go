@@ -29,7 +29,7 @@ Interview-style incidents, each reproduced as a runnable before-and-after. A sce
 
 ```
 scenarios/<slug>/
-├── README.md         incident, symptoms, root cause, fix, results, interview follow-ups
+├── README.md         explain it like I'm 5, incident, symptoms, root cause, fix, results, interview follow-ups
 ├── scenario.go       the simulation: Broken() and Fixed() return a Report
 ├── scenario_test.go  asserts the invariant: Broken violates it, Fixed holds it
 ├── broken/main.go    go run it to watch the failure

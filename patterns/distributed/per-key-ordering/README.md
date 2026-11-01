@@ -1,5 +1,13 @@
 # Per-Key Ordering (partition by key + resequencer)
 
+## Explain it like I'm 5
+
+Four friends bake cakes from step cards. Hand the cards to whoever is free, and Pia frosts a cake Jo hasn't baked yet. Yuck.
+
+So each cake belongs to one friend, and all its cards go to that friend. Different cakes still bake at once. The cards are numbered, and they can show up mixed. If card three comes before card two, it waits on the side. If card two never comes, the baker waits a little, skips it, and tells a grown-up. One stuck cake slows nobody else.
+
+*For grown-ups:* Each cake is an ordering key hashed to one partition's worker, card numbers are per-key sequence numbers, the side pile is the resequencer's buffer, and skipping is the gap timeout.
+
 ## Problem
 
 An order produces a short story of events: `created`, `paid`, `packed`, `shipped`. A consumer that applies them out of sequence does real damage: it ships an unpaid order, or a late `created` resets an order that has already shipped. Two things scramble the sequence:

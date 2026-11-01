@@ -1,5 +1,13 @@
 # RAG Retrieval (chunking, hybrid search, grounded prompts)
 
+## Explain it like I'm 5
+
+At the pet shop, Theo answers questions from memory. But the turtle feeding rule changed last spring, and Theo still says the old one. Asked about a new pet, Theo makes something up.
+
+Now there's a care book of short pages, each with a title. Theo finds the page by checking both what the words mean and the exact names. Then Theo answers only from that page and points to it. No page close enough? "I don't know." The wrong page gives an answer that's wrong but looks right.
+
+*For grown-ups:* Theo is the language model, titled pages are structure-aware chunks, checking both ways is hybrid retrieval, pointing is citation, "I don't know" is the relevance gate, and retrieval quality decides accuracy.
+
 ## Problem
 
 A support chatbot built on a general-purpose language model answers from what the model absorbed during training. For questions about *your* company that goes wrong in two ways:

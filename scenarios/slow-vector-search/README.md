@@ -1,5 +1,13 @@
 # Scenario: Semantic Search Gets Slow, Then Gets Wrong
 
+## Explain it like I'm 5
+
+To find a costume like "something scary," the teacher checked every costume in the giant dress-up room. As the room filled, that got slow. So the teacher sorted costumes into bins and peeked in only a few. Fast again. Then space suits arrived. No bin fit, so they scattered into old bins, and searches missed many of them. Still fast, just wrong.
+
+Now the teacher sorts again, with new bins, when the room doubles or new costumes fit badly. Quick answers also get checked against a careful full look.
+
+*For grown-ups:* Costumes are product embeddings, checking everything is flat search, bins are IVF lists around centroids, and the fix is retraining on growth or drift while tuning nprobe against measured recall.
+
 ## The incident
 
 An online store launches semantic product search: every product description is turned into an embedding, and a search phrase is embedded and matched against all of them. The first version uses a flat (exact) index, which scores the query against every product. At launch, with 200,000 products, a search takes under 80 ms. A year later the catalogue has passed a million products, p99 search latency is several hundred milliseconds, and the search page starts timing out at peak.

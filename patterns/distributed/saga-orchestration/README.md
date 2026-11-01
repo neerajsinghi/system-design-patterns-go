@@ -1,5 +1,13 @@
 # Saga (Orchestration)
 
+## Explain it like I'm 5
+
+Zoe is planning a birthday party with a clipboard. There's no way to get everything at once, so Zoe goes step by step: ask Ben for the cake, ask Mo for the balloons, ask the park for the big bouncy castle. The park says no.
+
+A party with no castle is off, so Zoe walks back up the clipboard, last to first. Mo, please return the balloons. Ben, please take back the cake. If someone doesn't answer, Zoe asks again, and then gets a grown-up.
+
+*For grown-ups:* Zoe is the orchestrator, each item is a local transaction in a saga, returning things in reverse order is compensation, and the grown-up handles a compensation that keeps failing.
+
 ## Problem
 
 A business operation spans several services, each with its own database:

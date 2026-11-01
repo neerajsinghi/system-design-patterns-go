@@ -1,5 +1,13 @@
 # Gossip (Epidemic) Protocol
 
+## Explain it like I'm 5
+
+The big slide is closed, and every kid at recess needs to know. If one kid has to tell everybody, that kid gets worn out, and if that kid stays home, nobody hears.
+
+So every little while, each kid finds a couple of friends at random and they swap news, keeping whatever is newest. Two kids know, then four, then eight, and soon the whole playground knows, even if a few chats get missed. For a short time, some kids just haven't heard yet.
+
+*For grown-ups:* Kids are nodes, each swap is a push-pull exchange with a random fanout of peers, keeping the newest is a versioned merge, and the late hearers are eventual consistency.
+
 ## Problem
 
 A cluster of hundreds or thousands of nodes needs to share information:

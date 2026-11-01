@@ -1,5 +1,13 @@
 # Scenario: Uploads That Never Finish Processing
 
+## Explain it like I'm 5
+
+One painter copied a very big painting while the customer waited at the door. The customer gave up and asked again, so more painters started the same painting. Everyone got busy, and a tiny drawing took until bedtime. When a painter went home, that work started from nothing.
+
+Now you get a claim ticket and leave, and asking twice gets the same ticket. The painting is cut into small squares that many painters share. Finished squares are saved, and another painter picks up any slow or missing square.
+
+*For grown-ups:* The painting is a video, squares are chunks, painters are workers, the claim ticket is a 202 job ID with an idempotency key, and saved squares are split-process-merge checkpoints with leases and speculation.
+
 ## The incident
 
 A video platform's evening peak: creators upload everything from one-minute clips to two-hour streams. The upload API encodes the video inside the POST handler, on whichever encode server picks up the request, from the first frame to the last. Encoding takes about three times the video's length, so even a one-minute clip outlives the load balancer's 60-second timeout. The app shows "upload failed, retrying" and sends the upload again. The server never noticed the first client left, so the first encode keeps running and the retry starts a second one, then a third and a fourth. A creator's two-hour keynote needs six hours on one machine; at hour five that machine is recycled and the encode starts over from zero. By 21:00 the encode fleet is full of duplicate copies and long videos, and a two-minute clip uploaded at 20:30 is not playable until well after midnight.

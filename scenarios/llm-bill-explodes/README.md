@@ -1,5 +1,13 @@
 # Scenario: The LLM Bill Grows Faster Than Usage
 
+## Explain it like I'm 5
+
+At the question booth, every word cost a coin, and every question went to the priciest expert. Each time, you had to repeat your whole chat so far. Lots of kids asked the same few things in their own words and paid every time. Then one stuck toy kept asking and spent a month's coins before lunch.
+
+Now common answers sit on a board. Easy questions go to a cheaper helper. You repeat only the last bit plus a short summary. Each group has a daily coin limit.
+
+*For grown-ups:* Coins are tokens, the expert is the largest LLM, the board is a semantic cache, the cheap helper is model routing, the summary is trimmed history, and the limit is a per-tenant budget.
+
 ## The incident
 
 A company ships an AI support assistant that its business customers (tenants) embed in their own help centres. It's a hit: within a month usage is ten times higher. The LLM invoice is worse than ten times higher. Nobody had looked at how requests were built. Every one goes to the largest model. Every turn resends a long system prompt and the whole conversation so far, so the twentieth message of a chat costs several times as much as the first. Thousands of users ask the same twenty questions in their own words, and each phrasing pays for a fresh answer. Then one tenant's ticket integration gets stuck in a retry loop, re-sending a growing thread every three seconds, and spends a month's allowance before lunch. Finance asks engineering to cut LLM spend by 70% without making the answers worse.

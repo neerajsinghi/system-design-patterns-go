@@ -1,5 +1,13 @@
 # Fan-out Feed (push, pull, hybrid)
 
+## Explain it like I'm 5
+
+Every kid in town has a little mailbox. When Theo draws a picture, Theo drops a copy in each friend's box. That's easy with a few friends. But the mayor has the whole town as friends, and all that copying would take forever.
+
+So the mayor pins one picture on the board in the town square. To check your pictures, you open your box, peek at the board, and put the newest first. And the town crier shouts "your bus is here" before any "new picture" shouts.
+
+*For grown-ups:* Mailboxes are precomputed inboxes (fan-out on write), the board is a celebrity outbox merged at read time, and the crier is the notification dispatcher with priority lanes.
+
 ## Problem
 
 A home timeline shows the newest posts from everyone a user follows. Reads

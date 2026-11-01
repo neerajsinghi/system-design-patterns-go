@@ -1,5 +1,13 @@
 # CQRS (Command Query Responsibility Segregation)
 
+## Explain it like I'm 5
+
+The playground shed got far too busy. The shed keeper had to say yes or no to borrowing balls and also answer every kid asking, "What's running low?" Everyone waited.
+
+So the jobs split. The keeper only says yes or no, and writes each yes in a notebook. Another kid reads the notebook and keeps a big wall poster of what's left. Everyone asking just reads the poster. It can run a little behind the notebook, and if it tears, the notebook can make a new one.
+
+*For grown-ups:* The keeper is the command side enforcing rules, the notebook is the event log, the poster is the read model projection, and running behind is eventual consistency.
+
 ## Problem
 
 One model serves both writes and reads. Writes need a normalised shape that's easy to validate ("don't oversell stock"). Reads want denormalised, query-specific shapes ("low-stock items across all warehouses, sorted", "orders per SKU"). Serving both from the same tables means complex joins on every read, indexes that slow every write, and a model that is bad at both jobs. Read and write load also can't be scaled independently.

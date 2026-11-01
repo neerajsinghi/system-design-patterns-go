@@ -1,5 +1,13 @@
 # Scenario: A Celebrity Post Floods the Push Pipeline
 
+## Explain it like I'm 5
+
+A very popular kid sent party invitations to the whole town. They went in the same sack as urgent notes like "Your ride is here," so those notes came too late. Carriers rushed, the post office said "Slow down," they tried again at once, and it got stricter. Houses where nobody lived got tried forever.
+
+Now urgent notes get their own sack, which goes first. Carriers walk just under the limit. Empty houses get crossed off after one try. Many small notes for one door are bundled into one.
+
+*For grown-ups:* The sack is the notification queue, the post office is APNs and FCM, empty houses are dead tokens in a dead-letter queue, and the fixes are priority lanes, token buckets and coalescing.
+
 ## The incident
 
 A celebrity with millions of followers posts a photo. The fan-out job does what it always does: one "new post" push per follower, all appended to the notification queue. That queue also carries the pushes people are actually waiting for, such as login codes and "your order is out for delivery". The worker pool drains the queue as fast as it can, far faster than APNs and FCM accept from one sender, so the providers start answering 429. The workers retry every failure straight away, and the providers throttle them harder for it. Login codes reach phones a minute or two after they were requested, long after they have expired. Meanwhile about one device in twenty no longer has the app installed. The provider rejects those tokens as unregistered every time, the workers retry them like any other error, and they never leave the queue. Fans then pile onto the comments under the post, and each commenter's phone buzzes once for every like.

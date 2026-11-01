@@ -1,5 +1,13 @@
 # Scenario: The Chat App Shows the Same Message Twice
 
+## Explain it like I'm 5
+
+Ana sent notes to Ben across the playground through a helper, then waited for a wave back. Whenever Ana was behind the slide and missed the wave, Ana wrote the note again, and Ben got it twice. After three quick tries Ana gave up, so some notes never came.
+
+Now each note gets one number, and every copy keeps it. The helper and Ben throw away numbers they've seen, but still wave. Ana waits longer between tries and keeps going. Ben sorts notes by number, so they read in order.
+
+*For grown-ups:* Notes are chat messages, the wave is an ack, the helper is the server, the number is a Snowflake ID, and the fixes are idempotent inboxes, backoff with jitter and ID ordering.
+
 ## The incident
 
 A messaging app starts getting screenshots from annoyed users. The same message shows up twice in a conversation, sometimes three times or more, and it's always from someone who was on a train or in a lift when they sent it. Other users complain about the opposite problem. They sent a message, the app showed it as failed or never ticked it, and the other person never got it. A few say they saw a message marked as failed that the other person had in fact received. Every server metric looks healthy. Nothing errors. The server stored and delivered exactly what it was sent.

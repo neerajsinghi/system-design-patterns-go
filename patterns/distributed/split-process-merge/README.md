@@ -1,5 +1,13 @@
 # Split-Process-Merge (chunked parallel jobs)
 
+## Explain it like I'm 5
+
+The class has a very long banner to paint. One kid would need all day, and one spilled paint cup would ruin everything.
+
+So Teacher cuts it into numbered pieces, and friends each grab one. A ruined piece just gets painted again. Every finished piece gets a check on the chart, so after lunch nobody starts over. When no pieces are left, free hands start a second copy of the slowest piece, and the first one done is kept. Then it all gets taped together in number order.
+
+*For grown-ups:* Pieces are chunks on a work queue, the chart is the checkpoint, the second copy is a speculative backup for a straggler, and taping in number order is the ordered merge.
+
 ## Problem
 
 Some jobs are one big unit of work. Encoding a two-hour upload into every resolution a player needs can take six hours of CPU, and done as one process:

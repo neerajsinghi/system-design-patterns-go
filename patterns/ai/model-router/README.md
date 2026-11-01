@@ -1,5 +1,13 @@
 # Model Router (LLM Cascades)
 
+## Explain it like I'm 5
+
+At the toy repair shop, every broken toy went to the master fixer, who is slow and costs lots of stickers. Even a loose wheel waited all morning.
+
+Now a greeter takes a quick look. Easy toys go to the little helper, harder ones to the big helper, the hardest to the master. A helper who isn't sure passes the toy up, and you pay both. Families who spend too many stickers today get only the little helper, then nobody until tomorrow. Sometimes a sure little helper is wrong.
+
+*For grown-ups:* Helpers are model tiers, the greeter scores and routes each prompt, passing up is confidence escalation, sticker limits are per-tenant daily budgets, and the sure-but-wrong helper is a mistake escalation never catches.
+
 ## Problem
 
 An AI feature launches on the biggest, most capable model because that is what the prototype used. Then traffic grows:

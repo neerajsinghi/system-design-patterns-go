@@ -1,5 +1,13 @@
 # Semantic Cache
 
+## Explain it like I'm 5
+
+At the aquarium desk, every question meant a long walk downstairs to the fish expert. "Where's the shark?" and "Which way to the big teeth fish?" are one question, but an exact-words notebook sees two.
+
+So Lee's notebook goes by what questions mean. Close enough? Lee reads the old answer. If not, Lee walks downstairs and writes the answer in. Each school group has its own, and "Where is my hat?" never goes in. Be too loose, and "How do I open the gate?" gets the answer for closing it.
+
+*For grown-ups:* The notebook is a per-tenant cache keyed by embeddings, "close enough" is the cosine threshold, the hat is an uncacheable user-specific answer, and the gate mix-up is a false hit.
+
 ## Problem
 
 LLM calls are slow (hundreds of milliseconds to several seconds) and billed per token. Many workloads ask the same few questions again and again, especially support bots, internal help desks and documentation assistants, so caching answers looks like an easy win. But people rarely phrase a question the same way twice:

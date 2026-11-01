@@ -1,5 +1,13 @@
 # Dead-Letter Queue
 
+## Explain it like I'm 5
+
+Pip the mail carrier has one letter for a house that nobody can find. Pip keeps going back to look, and the other letters in the bag get later and later.
+
+So there is a new rule. Try again a few times, waiting longer between each try. Still stuck? Put the letter in the red box with a note saying what went wrong. A letter too smudged to read goes right in. A grown-up checks the box, fixes the problem, and puts the letters back in the bag.
+
+*For grown-ups:* The stuck letter is a poison message, the waits are backoff, the red box is the dead-letter queue, the smudged letter is a permanent error, and putting letters back is redrive.
+
 ## Problem
 
 Most failed messages are worth retrying: a timeout, a deadlock, a downstream

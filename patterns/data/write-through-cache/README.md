@@ -1,5 +1,13 @@
 # Write-Through Cache
 
+## Explain it like I'm 5
+
+The little tag on the fish bowl says when the fish last ate, so you don't have to walk down the hall to the big notebook. But tags can be wrong, and overfed fish get sick.
+
+So there's a rule: after feeding, first write it in the notebook, then change the tag. If the notebook is missing, the tag stays as it was. Now the tag never says anything the notebook doesn't, and it's quick to read. The price is that long walk every time.
+
+*For grown-ups:* The tag is the cache, the notebook is the store, writing the notebook first is the synchronous write, and the long walk is the store latency every write pays.
+
 ## Problem
 
 With [cache-aside](../cache-aside), every write invalidates the cache entry. The next read pays a full miss, and there is a window in which readers and writers race. For data that is written and then read right away (sessions, balances, settings), you want the cache to stay warm and correct after every write.

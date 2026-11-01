@@ -1,5 +1,13 @@
 # Serve-Stale (stale-if-error)
 
+## Explain it like I'm 5
+
+At the zoo gate, Kai has a note from the keeper saying where the baby panda is. When the note gets old, Kai throws it out and asks again. One day the keeper can't be reached, and all Kai can say is "sorry."
+
+Better to keep the old note a bit longer. If the keeper doesn't answer, Kai reads it and says, "This might be a little old." Then Kai waits before asking again, so the keeper isn't pestered. Much too old? Then it's really "sorry."
+
+*For grown-ups:* The note is a cached entry, going old is the TTL, the extra time is the stale-if-error grace period, the pause is the retry interval, and "might be old" is the stale flag.
+
 ## Problem
 
 A cache in front of an origin hides most of the origin's latency, but not its outages. When the origin goes down:

@@ -1,5 +1,13 @@
 # Consistent Hashing
 
+## Explain it like I'm 5
+
+Cupcakes sit around a big round birthday table, and each cupcake belongs to the next kid sitting clockwise from it. When one more friend arrives, that friend sits down and takes only the cupcakes just before their new seat. Everyone else keeps theirs.
+
+The old way, counting cupcakes off kid by kid, meant one new friend sent nearly every cupcake to a different plate. To keep shares fair, each kid puts name cards at several spots around the table, not just one.
+
+*For grown-ups:* The table is the hash ring, cupcakes are keys, kids are nodes, name cards are virtual nodes, and counting off is hash modulo N.
+
 ## Problem
 
 You spread keys across N cache or storage nodes with `hash(key) % N`. That works until N changes. Going from 4 to 5 nodes changes the owner of about **80%** of keys. For a cache that means a near-total miss storm. For a datastore it means moving most of your data.

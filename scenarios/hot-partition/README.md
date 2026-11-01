@@ -1,5 +1,13 @@
 # Scenario: One Poll Throttles the Votes Table
 
+## Explain it like I'm 5
+
+The school kept votes in ten jars, and each question always used the same jar. A jar could only take so many beans at a time. During the talent show, the whole school voted on one question. That jar overflowed, and kids voting on other questions in it were turned away, though other jars sat nearly empty. More jars didn't help.
+
+Now, when a question gets busy, its beans spread across lots of jars with matching labels. To find the winner, you count every labelled jar, which takes longer.
+
+*For grown-ups:* Jars are partitions, the question's label is the partition key, and spreading beans is hot-key salting with an adaptive detector, read back by scatter-gather.
+
 ## The incident
 
 A streaming app lets viewers vote during a live talent-show final. Votes go into the same DynamoDB-style table as every other poll in the app, keyed by poll ID, with ten partitions of 1,000 writes/s each. On a normal evening the table takes about 2,000 votes/s across hundreds of community polls and sits at 20% of its capacity. When the host opens voting, the final's poll starts taking another 4,000 votes/s. The table is still only at 60% of its total capacity, yet half of all votes start failing with throttling errors. Users of unrelated polls ("best goal of the week") also start seeing "vote not recorded". The on-call engineer doubles the provisioned capacity, the partition count goes from 10 to 20, and the error rate barely moves.

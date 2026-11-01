@@ -1,5 +1,13 @@
 # Scenario: Order Events Arrive Out of Sequence
 
+## Explain it like I'm 5
+
+At the pet shop, every puppy got three cards: chosen, paid, going home. Any of eight helpers grabbed any card, and the quickest finished first. So families heard "Your puppy is coming" before paying. Some cards came late from the other shop. Helpers threw out cards that made no sense, and puppies got stuck.
+
+Now one helper handles all of a puppy's cards. Cards are numbered, and a tray holds card three until card two comes. If a card is truly lost, the helper waits briefly, then asks the owner.
+
+*For grown-ups:* Cards are order events, helpers are partition workers, one helper per puppy is per-key ordering, numbers are sequence numbers, the tray is a resequencer, and asking the owner is gap repair.
+
 ## The incident
 
 An order service publishes three events for every order: OrderCreated, PaymentCaptured, OrderShipped. A fulfilment and notification service consumes them from a topic with a pool of workers. Each order follows a strict state machine (created, then paid, then shipped), and handling OrderShipped sends the customer a "your order is on its way" email. Nobody chose a partition key, so the producer spreads events round-robin over the partitions. On a busy afternoon, support tickets come in from customers who got a "shipped" email for an order whose payment hadn't gone through yet. The fulfilment dashboard shows hundreds of rejected transitions, and more than 40% of the day's orders are stuck in "created" or "paid" even though the warehouse has dispatched them. The team pins down a second cause during the investigation. When a publish from the primary region times out, the producer in the second region retries it, and that copy reaches the broker tens of milliseconds after the events that came after it.

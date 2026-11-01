@@ -1,5 +1,13 @@
 # Write-Behind (Write-Back) Cache
 
+## Explain it like I'm 5
+
+On the back garden trampoline, you want your bounce count kept in the big book indoors. Running inside after every bounce means hardly any bouncing. And only the newest count matters.
+
+So you write the count on your hand and keep bouncing. Every so often a friend runs the latest number indoors, and one trip covers loads of bounces. The price: wash your hand before that trip, and those bounces are gone for good.
+
+*For grown-ups:* Your hand is the in-memory cache, the book is the store, the friend is the background flusher coalescing writes into batches, and washing your hand is a crash losing unflushed writes.
+
 ## Problem
 
 Some workloads write the same keys far more often than the store can absorb: view counters, "last seen" timestamps, game state, metrics. Writing every update synchronously makes write latency equal to store latency and turns the database into the bottleneck, even though only the latest value per key matters.

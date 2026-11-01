@@ -1,5 +1,13 @@
 # Competing Consumers
 
+## Explain it like I'm 5
+
+There are too many chores for one kid, so five friends share a pile of chore cards. Each friend takes the top card and flips a sand timer, and the card stays hidden while the sand runs. Chore done? Throw the card away.
+
+If Tam wanders off, the sand runs out and the card goes back on the pile for someone else. No chore gets lost. The small price: if Tam was only slow, that plant might get watered twice.
+
+*For grown-ups:* Each card is a message on a shared work queue, the sand timer is the visibility timeout, throwing it away is the ack, and the extra watering is at-least-once delivery.
+
 ## Problem
 
 A stream of independent jobs (send email, resize image, charge card) arrives

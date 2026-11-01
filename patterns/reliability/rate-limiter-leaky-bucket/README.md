@@ -1,5 +1,13 @@
 # Rate Limiter: Leaky Bucket
 
+## Explain it like I'm 5
+
+The little goat on the farm can only chew one carrot at a time. When every kid rushes over with carrots together, the goat gets a sore tummy.
+
+So the carrots go in a small basket, and the farmer hands over one carrot at each slow clap, always the same beat. If the basket is full, you hear "no room" and keep your carrot. Even after a hungry, empty morning, the goat still gets one carrot per clap. It's nice and steady, but you may have to wait.
+
+*For grown-ups:* The goat is a burst-intolerant downstream, the basket is a bounded FIFO queue, the clap is the fixed leak rate, "no room" is overflow, and idle time banks no credit.
+
 ## Problem
 
 Some downstreams cannot handle bursts at all. An SMS or payment provider

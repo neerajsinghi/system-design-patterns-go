@@ -1,5 +1,13 @@
 # Quorum Reads and Writes (N / R / W)
 
+## Explain it like I'm 5
+
+At summer camp, three friends each carry a card saying what game comes next, with a number in the corner. Waiting for all three is slow, and one is always off at the lake.
+
+So a new game counts once two friends have it, with a bigger number. To find out what's next, ask any two and trust the bigger number. Any two and any other two always share one friend. Then you fix the card that was behind. If two friends are gone, you wait.
+
+*For grown-ups:* The friends are N=3 replicas, W=2 and R=2 overlap because R + W > N, the corner number is the version, and fixing the card is read repair.
+
 ## Problem
 
 Data is replicated to several nodes so that it survives failures, but nodes

@@ -1,5 +1,13 @@
 # Publish/Subscribe
 
+## Explain it like I'm 5
+
+Kiran writes a dinosaur club flyer. Walking to every member's desk is slow, and one kid who isn't there holds everything up.
+
+Now Kiran gives the flyer to a helper, who puts a copy in the cubby of every kid who signed up. Kiran doesn't need to know who they are. Cubbies are small. If Noor's fills up, the helper tosses a flyer or takes Noor off the list, and only Noor misses out. Old-style flyers stay readable, because each kid keeps a guide for updating them.
+
+*For grown-ups:* The helper is the broker, the club is a topic, cubbies are bounded per-subscriber buffers with overflow policies, and the guide is a chain of upcasters for versioned events.
+
 ## Problem
 
 A producer needs to tell many other components that something happened (an

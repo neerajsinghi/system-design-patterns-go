@@ -1,5 +1,13 @@
 # Scenario: One Short Link Takes Down the URL Shortener
 
+## Explain it like I'm 5
+
+On parade day, three helpers at a booth each kept their own set of direction cards. Everyone wanted the same card, "Where does the parade start?" Only one helper had it. That helper was swamped, and people asking for other cards from that helper got no answer either. A fourth helper changed nothing.
+
+Now street guides keep that card in their pockets and check it only now and then, and all three helpers hold a copy. If the route changes, pocket cards stay wrong for just a moment.
+
+*For grown-ups:* Cards are cached redirects, booth helpers are cache nodes, street guides are app servers, pockets are the short-lived L1 cache, and copying the card is hot-key replication.
+
 ## The incident
 
 A URL shortener serves redirects from a three-node cache cluster that has run at 15% utilisation for months. During a cricket final, a broadcaster tweets a short link to the live scorecard. Within a minute that one link carries 90% of all redirects. One cache node hits its CPU limit and starts timing out, and redirects fail, including for thousands of unrelated links that happen to live on that node. Adding a fourth cache node during the incident changes nothing.

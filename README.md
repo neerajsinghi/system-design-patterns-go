@@ -9,6 +9,7 @@ Most system design material stops at boxes and arrows. This repo goes one step f
 
 - **Standard library only.** No Docker, brokers or databases needed. Nodes, networks, queues and disks are simulated in-process, so you can watch a partition, a crash or a retry storm play out.
 - **Deterministic.** Time-dependent code takes an injectable clock, so tests are fast and don't flake.
+- **Explained for everyone.** Every pattern and scenario opens with an "Explain it like I'm 5" story, plus one line that maps the story to the real thing.
 - **Honest about simplifications.** Each README says where the teaching version differs from production systems (for example, leader election here is lease-based, not Raft).
 
 ## Quickstart
@@ -219,7 +220,7 @@ Every pattern follows the same shape:
 
 ```
 patterns/<category>/<pattern>/
-├── README.md        problem, solution, diagram, trade-offs, when to use, real-world examples
+├── README.md        explain it like I'm 5, problem, solution, diagram, trade-offs, when to use, real-world examples
 ├── <pkg>.go         the implementation
 ├── <pkg>_test.go    table-driven tests, race-safe
 └── example/main.go  a runnable simulation that narrates what happens

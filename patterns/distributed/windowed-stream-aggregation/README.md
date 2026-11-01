@@ -1,5 +1,13 @@
 # Windowed Stream Aggregation (event time, watermarks, allowed lateness)
 
+## Explain it like I'm 5
+
+Kids at the pond count ducks for each part of the morning. Every spotter writes the time on a slip and sends it to the tally table. Some slips come late, so counting by arrival puts ducks in the wrong part.
+
+The table counts by the time on the slip and keeps only totals. Once the newest slip is a little past a part's end, the table announces that count. A late slip fixes the count, and the table announces again. Much too late? It gets tossed and counted.
+
+*For grown-ups:* Slip times are event time, parts of the morning are windows, the newest slip minus a small wait is the watermark, and fixes are re-emissions within allowed lateness.
+
 ## Problem
 
 A ride-hailing app sets surge prices from "ride requests vs available drivers, per geocell, per minute". The inputs are an unbounded stream of events from phones, and phones on bad networks (a rain shower, a tunnel, a crowded stadium) buffer events and deliver them seconds or minutes late, out of order.

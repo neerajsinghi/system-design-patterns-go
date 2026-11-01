@@ -1,5 +1,13 @@
 # Rate Limiter: Token Bucket
 
+## Explain it like I'm 5
+
+At the pizza place arcade, one kid could hog the games all night and leave none for anyone else. Now each kid gets a little cup that holds five play coins. A grown-up drops in a new coin every so often, but a full cup can't get any fuller. Each game costs one coin.
+
+If you've been busy eating pizza, your cup is full, and you can play five games in a row. After that, you wait for each new coin.
+
+*For grown-ups:* The cup is the bucket, its size is the burst, the slow drop is the refill rate, each game spends a token, and one cup per kid is a per-client limit.
+
 ## Problem
 
 A single client, a buggy script, or a sudden traffic spike can send more

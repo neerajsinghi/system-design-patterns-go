@@ -1,5 +1,13 @@
 # Snowflake IDs (Distributed Unique ID Generation)
 
+## Explain it like I'm 5
+
+Every drawing in art class needs its own label, and the labels should show which came first. Asking the teacher for the next number meant a long line at one desk, and no teacher meant no labels.
+
+Now each table stamps its own: the time on the clock, then its table number, then a count for that tick. Two tables can't match, because their numbers differ. Too many drawings in one tick? Wait for the next. If the clock ever runs backward, stop and wait, so no label repeats.
+
+*For grown-ups:* The stamp is a 64-bit ID of timestamp, node ID and sequence, the teacher is a central counter, and waiting handles sequence overflow and clock regression.
+
 ## Problem
 
 Chat messages, orders, tweets and log events all need an ID the moment they are created, on whichever server created them. The ID should be unique across the whole fleet, fit in a `BIGINT`, and ideally sort by creation time so "latest 50 messages" is an index range scan.

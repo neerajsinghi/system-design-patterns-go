@@ -1,5 +1,13 @@
 # Optimistic Locking (Versioned Compare-and-Set)
 
+## Explain it like I'm 5
+
+Two kids looked at the weekend sign-up sheet for the class hamster. Both saw "free." Both wrote their names, and the second name covered the first. One kid went home sure the hamster was coming.
+
+Now the sheet has a number that goes up with every change. Remember the number when you look. The teacher takes your name only if the number hasn't moved. If it has, look again: maybe the hamster is taken. Nobody waits, but on a busy day lots of kids must look again.
+
+*For grown-ups:* The sheet's number is the version, the teacher's check is an atomic compare-and-set, looking again is the retry after a conflict, and the covered name is the lost update.
+
 ## Problem
 
 Booking a seat looks like three harmless steps: read the seat, check that it is free, write "booked by me". Run two of those at once and they interleave:

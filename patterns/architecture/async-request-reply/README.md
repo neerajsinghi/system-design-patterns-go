@@ -1,5 +1,13 @@
 # Async Request-Reply
 
+## Explain it like I'm 5
+
+Ava wants a giant birthday cake, which takes all morning. The bakery won't let anyone wait at the counter that long, so Ava gets sent away and asks again. The baker thinks it's a new order and starts another cake. Lots of baking, and Ava still has no cake.
+
+So now Ava orders, gets a numbered slip, and goes to play. Ava peeks in, waiting longer each time, until the cake is on the shelf. Asking twice with the same order makes just one cake.
+
+*For grown-ups:* The slip is the job ID from a 202 response, peeking is polling with backoff, the shelf is the 303 to the result, and the repeated order is an idempotency key.
+
 ## Problem
 
 Some requests take minutes: encoding a video, generating a large report,

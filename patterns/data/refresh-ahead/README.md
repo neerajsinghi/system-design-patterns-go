@@ -1,5 +1,13 @@
 # Refresh-Ahead (TTL Jitter and Probabilistic Early Refresh)
 
+## Explain it like I'm 5
+
+At the picnic, all the lemonade jugs were filled together, so they all went stale together. Everyone stood thirsty while new jugs got made all at once.
+
+First trick: give each jug a slightly shorter, different "good until" time. Second trick: each time a kid pours, they roll a die. Early on, it almost never says "go make more." Close to the time it often does, and sooner for slow-to-make drinks. One kid goes, and everyone else keeps pouring. The price: some lemonade gets replaced early.
+
+*For grown-ups:* Jugs are cached entries, different times are TTL jitter, the dice roll is probabilistic early refresh (XFetch) weighted by recompute cost, and early jugs are the extra database loads.
+
 ## Problem
 
 TTL caches have a cliff: the moment an entry expires, the next reader pays the full database latency, and the database sees a burst of work. Two common situations turn that cliff into an outage:

@@ -1,5 +1,13 @@
 # Service Discovery
 
+## Explain it like I'm 5
+
+At the fire station, the firefighters keep moving to new trucks, and one who goes home sick never says goodbye. Nobody can remember who is where.
+
+So the station keeps a big board. Each firefighter writes a name and a spot, then comes back to tap it every so often. Stop tapping, and the name wipes away by itself. Need someone? Check the board and copy down the names. If your old note sends you to an empty truck, cross that name off and check again.
+
+*For grown-ups:* The board is the service registry, tapping is a heartbeat renewing a lease, your note is the client's cached lookup, and crossing off is evicting a failed endpoint and re-resolving.
+
 ## Problem
 
 In a dynamic environment, instances start, crash, autoscale, and move between

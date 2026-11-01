@@ -1,5 +1,13 @@
 # Connection Pool
 
+## Explain it like I'm 5
+
+Blowing up a raft takes a long time. At the pond, every kid used to puff up a new raft, float once, and let the air out. Everyone spent the day puffing, and when the pond got too full, new rafts were turned away.
+
+Now the pond keeps a few rafts already full. You borrow one, float, and hand it to the next kid in line. All rafts out? You wait your turn. Leaky or very old rafts get swapped for new ones.
+
+*For grown-ups:* Rafts are open connections, puffing is the TCP and TLS handshake, the pond's limit is the backend's connection cap, the line is the FIFO wait queue, and swapping is health checks plus max lifetime.
+
 ## Problem
 
 A service that opens a new connection for every request pays for it three ways:

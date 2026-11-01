@@ -1,5 +1,13 @@
 # Load Shedding
 
+## Explain it like I'm 5
+
+Too many kids climbed into the bouncy castle. Nobody could bounce. Everyone was squished, and the fun stopped, even with the castle completely full.
+
+Now a helper stands at the door and counts, saying "not right now" before anyone takes off their shoes. When bouncing looks easy, the helper lets in one more. When it gets slow and squishy, the helper cuts the number down fast. Kids wanting an extra go get turned away first, so kids on their first turn still get in.
+
+*For grown-ups:* The door count is a concurrency limit, adjusting by feel is AIMD on latency, the early "not right now" is cheap rejection, and extra goes are the first priority to be shed.
+
 ## Problem
 
 Every server has a capacity. Past it, queues grow, latency climbs for

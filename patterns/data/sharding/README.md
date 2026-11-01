@@ -1,5 +1,13 @@
 # Sharding (Hash vs Range Partitioning)
 
+## Explain it like I'm 5
+
+One bookshelf got too full, and one helper couldn't fetch fast enough. So the books moved to several shelves, and each book lives on exactly one. But which?
+
+By first letter: A to G here, H to P there. Finding all the D books is easy, and a stuffed shelf can split in two. But if most titles start the same way, one shelf groans. Or use a scramble rule on the title: books spread evenly, but finding all the D books means checking every shelf.
+
+*For grown-ups:* Shelves are shards, letters are range sharding with splits, the scramble rule is hash sharding, and checking every shelf is scatter-gather; hash slots limit how much moves when shelves are added.
+
 ## Problem
 
 One database node can no longer hold the data or absorb the write rate. Read replicas don't help, because every replica still stores everything and every write still goes to a single leader. You need to split the data so that each node owns a part of it.

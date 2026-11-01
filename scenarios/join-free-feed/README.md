@@ -1,5 +1,13 @@
 # Scenario: The Home Feed JOIN That Melts the Database
 
+## Explain it like I'm 5
+
+Every time Sam asked, "What did my friends draw?" the teacher walked to each friend's folder, looked through all their drawings, counted every sticker and sorted the newest. As friends piled up, the walking took all evening, and kids gave up waiting. More teachers helped only briefly.
+
+Now each kid has a ready board, and new drawings get copied onto friends' boards. Sticker counts stay on one card. Very popular kids keep one board that everyone peeks at. Boards can run a moment behind, and copying is extra work.
+
+*For grown-ups:* Folders are normalized tables, the walk is the JOIN, boards are a materialized view under CQRS, the sticker card is a like counter, and peeking is hybrid fan-out.
+
 ## The incident
 
 A photo-sharing app builds every home feed with one SQL query: take the accounts the viewer follows, join their posts, join each post's author for the name and avatar, count each post's likes, sort by time and keep 20. At launch people follow a dozen accounts, posts have a handful of likes, and the query takes a few milliseconds. A year later the average user follows hundreds of accounts and popular posts collect thousands of likes. Nothing in the code changed, but each page view now reads thousands of rows. Every evening, when traffic peaks, database CPU sits at 100%, p99 feed latency climbs into seconds and the app shows spinners and time-outs. The team adds read replicas. That helps for a few weeks, until the graph grows again.

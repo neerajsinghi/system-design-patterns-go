@@ -1,5 +1,13 @@
 # Geospatial Index (geohash)
 
+## Explain it like I'm 5
+
+Hide and seek in a huge park: you want friends close by, but asking every kid how far away they are takes all day. So the park gets chalked into squares as wide as you want to look, and each square keeps a list of who is in it.
+
+Now look only in your own square and the eight around it, since a friend just over the line could be close. Then check who is truly near. When a kid runs to a new square, only that kid's name moves.
+
+*For grown-ups:* Squares are geohash cells, the eight around are neighbour cells, checking is the exact distance filter, and moving one name is a cheap location update.
+
 ## Problem
 
 "Find the drivers within 2 km of me" is easy to write as a loop: compute the distance from the rider to every driver and keep the close ones. That is O(N) per query, and almost all of the work is wasted on drivers on the other side of the city.

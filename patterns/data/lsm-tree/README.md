@@ -1,5 +1,13 @@
 # LSM Tree (Log-Structured Merge Tree)
 
+## Explain it like I'm 5
+
+Keeping every friend's favourite snack in one neat book means squeezing in and rewriting pages all day. So Ana scribbles changes on a small notepad. When it fills up, Ana sorts it, staples it into a little booklet, puts it on top of a stack and never changes it again.
+
+To look up a friend, check the notepad, then the booklets from top to bottom. The first answer wins. A friend who moved away gets a "gone" note. Sometimes Ana merges the stack into one, keeping only the newest.
+
+*For grown-ups:* The notepad is the memtable, booklets are immutable SSTables, the "gone" note is a tombstone, and merging the stack is compaction.
+
 ## Problem
 
 B-trees update pages in place. Every random write becomes a random disk read-modify-write, which hurts badly for write-heavy workloads (time series, event logs, metrics, messaging). You want writes to be **sequential** and batched, while keeping reasonably fast point reads and range scans.

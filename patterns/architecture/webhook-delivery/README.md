@@ -1,5 +1,13 @@
 # Webhook Delivery
 
+## Explain it like I'm 5
+
+Pizza delivery gets tricky when nobody answers the door. The driver comes back later, waiting longer each time, so the same pizza can show up twice. Every box has an order number. If Max's family already has that number, they say thanks and don't eat or pay twice.
+
+Each box also carries the time and a secret squiggle that only the shop and the family know. So a trickster can't bring a fake box, or sneak back with an old one.
+
+*For grown-ups:* Knocking is an HTTP POST retried with backoff, the order number is the event ID for dedup, and the squiggle and time are the HMAC signature and timestamp blocking forgeries and replays.
+
 ## Problem
 
 Your platform has to notify customers' servers when something happens, such

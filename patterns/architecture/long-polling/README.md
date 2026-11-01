@@ -1,5 +1,13 @@
 # Long Polling
 
+## Explain it like I'm 5
+
+Every few minutes, Zoe called Grandma to ask, "Anything new?" Nearly always the answer was no, and real news sat waiting for the next call.
+
+Now Zoe calls once and Grandma stays on the phone, quiet, until there is news. Grandma shares it and hangs up, and Zoe calls right back. After a long quiet time, Grandma says "nothing yet" and they start again. Grandma numbers each bit of news in a notebook, and Zoe says the last number heard, so nothing gets missed between calls.
+
+*For grown-ups:* Staying on the phone is the server holding the request until an event or a timeout's 204, and the notebook number is the cursor into a retained log that covers gaps between polls.
+
 ## Problem
 
 A client needs updates within a second or so of them happening: a chat

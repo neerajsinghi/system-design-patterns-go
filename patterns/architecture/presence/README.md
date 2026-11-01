@@ -1,5 +1,13 @@
 # Presence
 
+## Explain it like I'm 5
+
+The tree house club has a board with everyone's name on it. While you play up there, you ring a little bell now and then, and your name stays up. If your bell stops, even if you slipped away without a goodbye, your name comes down by itself.
+
+But Kai often climbs down to tie a shoe and comes right back. So the club waits a little before telling friends that Kai left. Back in time? Nobody hears a thing. The price is that real goodbyes show up late.
+
+*For grown-ups:* The bell is a heartbeat renewing a TTL lease, the name dropping is lease expiry, and the short wait is the offline grace period that suppresses flapping presence events.
+
 ## Problem
 
 Real-time products keep asking three questions about every user, all the time:
