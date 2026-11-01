@@ -62,7 +62,7 @@ flowchart TD
   always combine with a [timeout](../timeout).
 - Retrying non-idempotent operations can duplicate side effects; pair with an
   [idempotency key](../idempotency-key).
-- Retries at every layer multiply: 3 retries at each of 3 hops is 27x load.
+- Retries at every layer multiply: 3 attempts at each of 3 hops is 27x load.
   Retry at one layer, ideally the one closest to the user.
 - Jitter makes individual latencies less predictable in exchange for a much
   smoother aggregate load.

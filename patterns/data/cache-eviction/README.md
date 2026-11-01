@@ -59,7 +59,7 @@ flowchart LR
 - `Sketch` is a count-min sketch: four rows of one-byte counters, 8 × capacity wide. One 64-bit `maphash` of the key is split into four row indexes by double hashing. Counters saturate at 15 (Caffeine uses 4-bit counters), and after 10 × capacity increments every counter is halved.
 - `Replay` runs a trace through a policy as a read-through cache and returns hits and misses. The tests and the example use it to compare policies on the same workload.
 
-**Simplifications.** Caffeine's main region is a segmented LRU (probation and protected), its window size adapts by hill climbing, and it adds a "doorkeeper" Bloom filter so one-off keys don't touch the sketch at all. Its counters are packed four bits each, so the sketch costs about 8 bytes per entry; this one uses 32. The admission idea is the same.
+**Simplifications.** Caffeine's main region is a segmented LRU (probation and protected), and its window size adapts by hill climbing. Its counters are packed four bits each, so the sketch costs about 8 bytes per entry; this one uses 32. The admission idea is the same.
 
 ## Trade-offs
 

@@ -10,7 +10,7 @@ Back with coins before the sand runs out? The seats are yours, and asking again 
 
 ## Problem
 
-Checkout is not instant. Between "I want these two seats" and "payment succeeded" there are minutes of form filling, 3-D Secure prompts and slow payment providers. Something has to stop a second shopper from paying for the same seats in that gap, and every simple answer goes wrong in one of two directions:
+Checkout is not instant. Between "I want these two seats" and "payment succeeded" there are minutes of form filling, 3-D Secure prompts and slow payment providers. Something has to stop a second shopper from paying for the same seats in that gap, and every simple answer goes wrong in one of three ways:
 
 - **Holds that never expire.** The seat is taken out of the pool when checkout starts and only comes back if the shopper cancels. Shoppers rarely cancel: they close the tab, lose signal or give up on a failed card. In a flash sale those dead carts lock a large share of the inventory, so the event shows "sold out", turns real buyers away and still ends with empty seats.
 - **Holds that expire, but late payments still count.** The seat goes back to the pool on a timer and is sold to someone else, then the first shopper's payment arrives and is also turned into a sale. Two people now own one seat: an oversell, a refund and an angry customer at the gate.

@@ -118,4 +118,4 @@ go test ./patterns/architecture/cursor-pagination/
 - [Fan-out feed](../fan-out-feed): the timelines that are usually paged this way.
 - [Read replicas](../../data/read-replicas): paged reads are often served from replicas, where replication lag interacts with cursors.
 - [Materialized view](../../data/materialized-view): precomputed, indexed lists that make keyset seeks cheap.
-- [Webhook delivery](../webhook-delivery): another place HMAC signing protects data that clients send back.
+- [Webhook delivery](../webhook-delivery): another place HMAC signing proves who produced the data: the sender signs each delivery and the receiver verifies it.

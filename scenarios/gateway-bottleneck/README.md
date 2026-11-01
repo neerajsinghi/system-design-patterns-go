@@ -10,7 +10,7 @@ Now gate keepers check a special stamp themselves, keep a few doors open, and gi
 
 ## The incident
 
-A retailer's flash sale starts at 12:00, and API traffic triples within a second. The API gateway's CPU goes to 99%, and p99 latency for every client goes from tens of milliseconds to the gateway's 2-second timeout. The backends' dashboards stay green: they are healthy, but most requests never reach them. The autoscaler adds a gateway. CPU drops to about 80%, but latency keeps rising, because the queue just moves somewhere else. About fifteen seconds into the sale the gateway is answering almost every request with a 504, while its CPU sits at 25% and the auth service runs flat out on token checks for requests the gateway has already given up on. One partner integration had a retry bug and was sending ten times its usual volume through it all.
+A retailer's flash sale starts at 12:00, and API traffic quadruples within a second. The API gateway's CPU goes to 99%, and p99 latency for every client goes from tens of milliseconds to the gateway's 2-second timeout. The backends' dashboards stay green: they are healthy, but most requests never reach them. The autoscaler adds a gateway. CPU drops to about 80%, but latency keeps rising, because the queue just moves somewhere else. About fifteen seconds into the sale the gateway is answering almost every request with a 504, while its CPU sits at 25% and the auth service runs flat out on token checks for requests the gateway has already given up on. One partner integration had a retry bug and was sending ten times its usual volume through it all.
 
 ## Symptoms
 
