@@ -165,6 +165,16 @@ Production incidents reproduced as runnable before-and-afters: the broken design
 go run ./scenarios/cache-stampede/broken   # then ./fixed
 ```
 
+## Comparisons
+
+Side-by-side guides to technologies that do the same job, each with diagrams of how they work, a quadrant chart placing them and their relatives, and a decision flowchart. See [`comparisons/`](comparisons).
+
+| Area | Comparisons |
+|---|---|
+| Data stores | [SQL vs NoSQL](comparisons/sql-vs-nosql) · [PostgreSQL vs MySQL](comparisons/postgresql-vs-mysql) · [MongoDB vs Cassandra vs DynamoDB](comparisons/mongodb-vs-cassandra-vs-dynamodb) · [Strong vs eventual consistency](comparisons/strong-vs-eventual-consistency) · [Redis vs Memcached](comparisons/redis-vs-memcached) · [Elasticsearch vs Postgres full-text](comparisons/elasticsearch-vs-postgres-full-text) · [pgvector vs vector databases](comparisons/pgvector-vs-dedicated-vector-databases) · [Object vs block vs file storage](comparisons/object-vs-block-vs-file-storage) |
+| Messaging and real time | [Kafka vs RabbitMQ](comparisons/kafka-vs-rabbitmq) · [Batch vs stream processing](comparisons/batch-vs-stream-processing) · [WebSocket vs SSE vs long polling](comparisons/websocket-vs-sse-vs-long-polling) |
+| Services and infrastructure | [REST vs gRPC vs GraphQL](comparisons/rest-vs-grpc-vs-graphql) · [NGINX vs HAProxy vs Envoy](comparisons/nginx-vs-haproxy-vs-envoy) · [Monolith vs microservices](comparisons/monolith-vs-microservices) · [etcd vs ZooKeeper vs Consul](comparisons/etcd-vs-zookeeper-vs-consul) |
+
 ## Which pattern do I need?
 
 | If you're facing… | Start with |
